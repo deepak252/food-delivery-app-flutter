@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/utils/keyboard_utils.dart';
 import 'package:food_delivery_app/utils/text_validator.dart';
 import 'package:food_delivery_app/widgets/app_icon_widget.dart';
@@ -43,6 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Themes.backgroundColor,
         appBar: AppBar(
           title: const Text("Sign Up"),
+          titleSpacing: 0,
         ),
         body: SingleChildScrollView(
           physics : const BouncingScrollPhysics(),
@@ -123,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   GestureDetector(
                     onTap: (){
                       unfocus(context);
-                      Get.back();
+                      AppNavigator.pop(context);
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4.0),
@@ -150,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       icon: Icon(
         // Based on passwordVisible state choose the icon
         _visibilityNotifier.value ? Icons.visibility : Icons.visibility_off,
-        color: Themes.colorPrimary,
+        color: _visibilityNotifier.value ? Themes.colorPrimary : Themes.black300,
         size: 23,
       ),
       onPressed: () {
