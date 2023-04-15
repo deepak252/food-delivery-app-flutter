@@ -17,7 +17,7 @@ class UserController extends GetxController{
   bool get loadingNotifications => _loadingNotifications.value;
   
   final _testUser = User(
-    userId: 1,
+    id: 1,
     fullName: "Deepak Chaurasiya",
     email: "deepak@gmail.com",
     mobile: "9876543210"

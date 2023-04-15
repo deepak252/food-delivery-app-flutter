@@ -1,24 +1,29 @@
 
 
 import 'package:food_delivery_app/models/address.dart';
+import 'package:food_delivery_app/models/cart.dart';
 
 class User {
-  final int userId;
+  final int id;
   String? fullName;
   String? email;
   String? mobile;
   String? profilePic;
+  List<String>? favItems;
+  List<Cart>? cartItems;
   
   User({
-    required this.userId,
+    required this.id,
     this.fullName,
     this.email,
     this.mobile,
     this.profilePic,
+    this.favItems,
+    this.cartItems
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    userId: json["userId"],
+    id: json["id"],
     fullName: json["fullName"],
     email: json["email"],
     mobile: json["mobile"],
@@ -26,7 +31,7 @@ class User {
   );
 
   Map<String, dynamic> toJson() => {
-    "userId": userId,
+    "id": id,
     "fullName": fullName,
     "email": email,
     "mobile": mobile,
@@ -34,7 +39,7 @@ class User {
   };
 
   User copyWith({
-    int? userId,
+    int? id,
     String? token,
     String? fullName,
     String? email,
@@ -46,7 +51,7 @@ class User {
     DateTime? updatedAt,
   }) {
     return User(
-      userId: userId ?? this.userId,
+      id: id ?? this.id,
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       mobile: mobile ?? this.mobile,
@@ -62,7 +67,7 @@ class User {
 // import 'package:food_delivery_app/models/address.dart';
 
 // class User {
-//   final int userId;
+//   final int id;
 //   String? token;
 //   String? fullName;
 //   String? email;
@@ -78,7 +83,7 @@ class User {
 //   bool isLive=false;
   
 //   User({
-//     required this.userId,
+//     required this.id,
 //     this.token,
 //     this.fullName,
 //     this.email,
@@ -92,7 +97,7 @@ class User {
 //   });
 
 //   factory User.fromJson(Map<String, dynamic> json) => User(
-//     userId: json["userId"],
+//     id: json["id"],
 //     token: json["token"],
 //     fullName: json["fullName"],
 //     email: json["email"],
@@ -108,7 +113,7 @@ class User {
 //   );
 
 //   Map<String, dynamic> toJson() => {
-//     "userId": userId,
+//     "id": id,
 //     "token": token,
 //     "fullName": fullName,
 //     "email": email,
@@ -121,7 +126,7 @@ class User {
 //   };
 
 //   User copyWith({
-//     int? userId,
+//     int? id,
 //     String? token,
 //     String? fullName,
 //     String? email,
@@ -133,7 +138,7 @@ class User {
 //     DateTime? updatedAt,
 //   }) {
 //     return User(
-//       userId: userId ?? this.userId,
+//       id: id ?? this.id,
 //       token: token ?? this.token,
 //       fullName: fullName ?? this.fullName,
 //       email: email ?? this.email,

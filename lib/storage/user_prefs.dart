@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:food_delivery_app/utils/debug_utils.dart';
+import 'package:food_delivery_app/utils/logger.dart';
 import 'package:get_storage/get_storage.dart';
 
 class UserPrefs {
-  static final _debug = DebugUtils("UserPrefs");
+  static final _logger = Logger("UserPrefs");
   static final GetStorage _getStorage = GetStorage();
 
   static const String _userKey = 'USER_PROFILE';
@@ -12,12 +12,12 @@ class UserPrefs {
 
   static Future setToken({required String value})async{
     await _getStorage.write(_userKey, value);
-    _debug.message("setToken", value);
+    _logger.message("setToken", value);
   }  
 
   static Future clearData() async{
     await _getStorage.erase();
-    _debug.message("clearData", "Removed User Prefs");
+    _logger.message("clearData", "Removed User Prefs");
   }
 
 }
