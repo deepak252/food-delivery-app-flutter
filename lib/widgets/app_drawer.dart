@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/screens/fav_items_screen.dart';
 import 'package:food_delivery_app/splash_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/user_profile_widget.dart';
@@ -50,7 +51,7 @@ class AppDrawer extends StatelessWidget {
               _DrawerTile(
                 onTap: (){
                   Navigator.pop(context);
-                  // AppNavigator.push(context, FavoritePetsScreen());
+                  AppNavigator.push(context, FavItemsScreen());
                 }, 
                 icon: Icons.favorite_border_outlined, 
                 title: "Favorites",

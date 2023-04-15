@@ -3,13 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
-import 'package:food_delivery_app/services/firestore_service.dart';
-import 'package:food_delivery_app/services/item_service.dart';
-import 'package:food_delivery_app/utils/location_utils.dart';
-import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+
 import 'package:food_delivery_app/widgets/item/item_tile.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 
 
@@ -26,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
-    _itemController.fetchFoodItems();
+    _itemController.fetchItems();
     super.initState();
   }
 
@@ -70,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
         return RefreshIndicator(
           onRefresh: ()async{
-            await _itemController.fetchFoodItems();
+            await _itemController.fetchItems();
           },
           child: GridView.builder(
             padding: EdgeInsets.symmetric(horizontal: 6),

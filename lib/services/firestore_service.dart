@@ -24,6 +24,18 @@ class FirestoreService{
     return false;
   }
 
+  Future<bool> updateDoc(String docId, Map<Object,Object> data)async{
+    try{
+      await _collection.doc(docId).update(
+        data
+      );
+      return true;
+    }catch(e,s){
+      _logger.error("updateDoc", error: e,stackTrace: s);
+    } 
+    return false;
+  }
+
   Future<DocumentSnapshot?> getDoc(String docId)async{
     try{
       final docSnapshot = await _collection.doc(docId).get();
@@ -41,6 +53,18 @@ class FirestoreService{
   })async{
     try{
       final querySnapshot = await _collection.limit(limit).get();
+      return querySnapshot.docs;
+    }catch(e,s){
+      _logger.error("getDocs", error: e,stackTrace: s);
+    } 
+    return null;
+  }
+
+  Future<List<DocumentSnapshot>?> getSpecificDocs(List<String> docIds)async{
+    try{
+      final querySnapshot = await _collection
+        .where(FieldPath.documentId, whereIn: docIds)
+        .get();
       return querySnapshot.docs;
     }catch(e,s){
       _logger.error("getDocs", error: e,stackTrace: s);

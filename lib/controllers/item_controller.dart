@@ -13,6 +13,11 @@ class ItemController extends GetxController {
     return items.firstWhereOrNull((e) => e.id==itemId);
   }
 
+  final _loadingFavItems = false.obs;
+  bool get isLoadingFavItems => _loadingFavItems.value;
+  final _favItems = Rxn<List<Item>>();
+  List<Item> get favItems => _favItems.value??[];
+
   final _loadingSigleItem = {}.obs;
   bool loadingSingleItem(String itemId){
     return _loadingSigleItem[itemId]==true;
@@ -24,7 +29,7 @@ class ItemController extends GetxController {
     super.onInit();
   }
 
-  Future fetchFoodItems({bool enableLoading = true}) async {
+  Future fetchItems({bool enableLoading = true}) async {
     if(enableLoading){
       _loadingItems(true);
     }
@@ -35,6 +40,17 @@ class ItemController extends GetxController {
 
     if(enableLoading){
       _loadingItems(false);
+    }
+  }
+
+  Future fetchFavItems({required List<String> favItemIds, bool enableLoading = true}) async {
+    if(enableLoading){
+      _loadingFavItems(true);
+    }
+    final res = await ItemService.getSpecificItems(favItemIds);
+    _favItems(res);
+    if(enableLoading){
+      _loadingFavItems(false);
     }
   }
 

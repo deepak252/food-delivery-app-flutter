@@ -5,9 +5,11 @@ import 'package:food_delivery_app/models/user.dart';
 import 'package:food_delivery_app/services/firebase_auth_service.dart';
 import 'package:food_delivery_app/services/user_service.dart';
 import 'package:food_delivery_app/storage/user_prefs.dart';
+import 'package:food_delivery_app/utils/logger.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController{
+  final _logger = Logger("UserController");
   final _loading = false.obs;
   bool get isLoading => _loading.value;
 
@@ -15,8 +17,12 @@ class UserController extends GetxController{
   User? get user => _user.value;
   bool get isSignedIn => user!=null;
 
-  final _loadingNotifications = false.obs;
-  bool get loadingNotifications => _loadingNotifications.value;
+  List<String> get getFavItemIds => user?.favItems??[];
+
+  final _loadingSigleItem = {}.obs;
+  bool loadingSingleItem(String itemId){
+    return _loadingSigleItem[itemId]==true;
+  }
   
   // final _testUser = User(
   //   id: "1",
@@ -29,11 +35,11 @@ class UserController extends GetxController{
   void onInit() {
     super.onInit();
     
-    fetchProfile();
+    // fetchProfile();
     
   }
 
-  Future<bool?> fetchProfile({ String? userId ,bool enableLoading = false})async{
+  Future fetchProfile({ String? userId ,bool enableLoading = false})async{
     if(enableLoading){
       _loading(true);
     }
@@ -46,22 +52,53 @@ class UserController extends GetxController{
       final _usr = await UserService.getUser(userId);
       _user(_usr);
     }
-
-    // await Future.delayed(Duration(milliseconds: 2000));
-    // _user(_testUser);
     if(enableLoading){
       _loading(false);
     }
   }
 
+  Future addItemToFav(String itemId)async{
+    if(!isSignedIn){
+      _logger.message("addItemToFav", "Not Signed In!");
+      return false;
+    }
+    _loadingSigleItem[itemId] = true;
+    final res = await UserService.addItemToFav(
+      userId: user?.id??'',
+      itemId: itemId
+    );
+    if(res){
+      _logger.message("addItemToFav", "Item added to fav : $itemId");
+      _user.update((val) {
+        val?.favItems.add(itemId);
+        _user(val);
+      });
+    }
+    _loadingSigleItem[itemId] = false;
+  }
+
+  Future removeItemFromFav(String itemId)async{
+    if(!isSignedIn){
+      _logger.message("removeItemFromFav", "Not Signed In!");
+      return false;
+    }
+    _loadingSigleItem[itemId] = true;
+    final res = await UserService.removeItemFromFav(
+      userId: user?.id??'',
+      itemId: itemId
+    );
+    if(res){
+      _logger.message("removeItemFromFav", "Item removed from fav : $itemId");
+      _user.update((val) {
+        val?.favItems.remove(itemId);
+        _user(val);
+      });
+    }
+    _loadingSigleItem[itemId] = false;
+  }
+
 
   Future<bool> updateProfile(Map<String,dynamic> data)async{
-    
-    // log("${data}");
-    // final user = await UserService.updateProfile(
-    //   token: _token!,
-    //   data: data
-    // );
     if(user!=null){
       _user(user);
       return true;
