@@ -56,8 +56,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         //     //   28.6409499, 77.2101718
         //     // );
         //     try{
-        //       ItemService.getItems();
-        //       // ItemService.insertItems();
+        //       // ItemService.getItems();
+        //       ItemService.insertItems();
         //       // var a = await GeocodingPlatform.instance.locationFromAddress(
         //       // "1830-31, Ground Floor, Laxmi Narain Street, Chuna Mandi, Paharganj, New Delhi"
         //       // );

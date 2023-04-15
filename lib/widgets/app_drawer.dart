@@ -2,11 +2,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
-import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
-import 'package:food_delivery_app/models/user.dart';
-import 'package:food_delivery_app/widgets/cached_image_container.dart';
+import 'package:food_delivery_app/splash_screen.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/user_profile_widget.dart';
 import 'package:get/get.dart';
 
@@ -74,15 +73,16 @@ class AppDrawer extends StatelessWidget {
                 title: "Orders",
               ),
               const Divider(thickness: 2,),
-              // if(_userController.isSignedIn)
-              //  _DrawerTile(
-              //     onTap: ()async{
-              //       // _userController.logOut();
-              //       // AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
-              //     }, 
-              //     icon: Icons.logout,
-              //     title: "Sign Out",
-              //   ),
+              if(_userController.isSignedIn)
+               _DrawerTile(
+                  onTap: ()async{
+                    // Navigator.pop(context);
+                    await _userController.logOut();
+                    AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
+                  }, 
+                  icon: Icons.logout,
+                  title: "Sign Out",
+                ),
              
               _DrawerTile(
                 onTap: (){
@@ -110,59 +110,7 @@ class AppDrawer extends StatelessWidget {
   }
 
 
-  Widget drawerHeader(User? user){
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //Profile Pic
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: CachedImageContainer(
-              imgUrl: user?.profilePic??Constants.defaultPic,
-              height: 80,
-              width: 80,
-              borderRadius: BorderRadius.circular(100),
-            )
-          ),
-          const SizedBox(height: 12,),
-          Text(
-            user!=null
-            ? "${user.fullName}"
-            : "Sign In",
-            style: const TextStyle(
-              fontSize: 20
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8,),
-          Text(
-            user?.mobile??'',
-            style: const TextStyle(
-              fontSize: 14
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            user?.email??'',
-            style: const TextStyle(
-              fontSize: 14
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-        
-        ],
-      ),
-    );
-
-  }
+  
 }
 
 class _DrawerTile extends StatelessWidget {
@@ -181,7 +129,7 @@ class _DrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 8),
       child: Material(
         color: Colors.transparent,
         child: ListTile(

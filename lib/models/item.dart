@@ -6,6 +6,8 @@ import 'package:food_delivery_app/utils/num_utils.dart';
 class Item {
   String id;
   String? name;
+  ///Restaurant Name
+  String? resName;
   List<String> category;
   List<String> images;
   String? descEnglish;
@@ -13,22 +15,26 @@ class Item {
   double? price;
   List<ItemReview> reviews;
   Address? location;
+  int? stock;
   
   Item({
     required this.id,
     this.name,
+    this.resName,
     this.category =const [],
     this.images=const [],
     this.descEnglish,
     this.descHindi,
     this.price,
     this.reviews= const [],
-    this.location
+    this.location,
+    this.stock=0
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
     id: json["id"]??'',
     name: json["name"],
+    resName: json["resName"],
     category: json["category"] != null
             ? List<String>.from(json["category"].map((x) => x.toString()))
             : [],
@@ -41,13 +47,15 @@ class Item {
     reviews: json["reviews"] != null
             ? List<ItemReview>.from(json["reviews"].map((x) => x))
             : [],
-    location: Address.fromJson(json["location"])
+    location: Address.fromJson(json["location"]),
+    stock: json["stock"],
     
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
+    "resName": resName,
     "category": List<String>.from(category.map((x) => x)),
     "images": List<String>.from(images.map((x) => x)),
     "descEnglish": descEnglish,
@@ -55,6 +63,7 @@ class Item {
     "price": price,
     "reviews": List<ItemReview>.from(reviews.map((x) => x)),
     "location": location?.toJson(),
+    "stock" : stock
   };
 }
 
@@ -91,31 +100,3 @@ extension ExtItem on Item{
     return reviews.fold(0,(value, element) => value +element.rating);
   }
 }
-
-// class Address {
-//     Address({
-//         required this.name,
-//         required this.address,
-//         required this.lat,
-//         required this.lng,
-//     });
-
-//     String name;
-//     String address;
-//     String lat;
-//     String lng;
-
-//     factory Address.fromJson(Map<String, dynamic> json) => Address(
-//         name: json["name"],
-//         address: json["address"],
-//         lat: json["lat"],
-//         lng: json["lng"],
-//     );
-
-//     Map<String, dynamic> toJson() => {
-//         "name": name,
-//         "address": address,
-//         "lat": lat,
-//         "lng": lng,
-//     };
-// }

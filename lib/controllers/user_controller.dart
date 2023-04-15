@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/models/user.dart';
+import 'package:food_delivery_app/services/firebase_auth_service.dart';
+import 'package:food_delivery_app/services/user_service.dart';
 import 'package:food_delivery_app/storage/user_prefs.dart';
 import 'package:get/get.dart';
 
@@ -16,12 +18,12 @@ class UserController extends GetxController{
   final _loadingNotifications = false.obs;
   bool get loadingNotifications => _loadingNotifications.value;
   
-  final _testUser = User(
-    id: 1,
-    fullName: "Deepak Chaurasiya",
-    email: "deepak@gmail.com",
-    mobile: "9876543210"
-  );
+  // final _testUser = User(
+  //   id: "1",
+  //   fullName: "Deepak Chaurasiya",
+  //   email: "deepak@gmail.com",
+  //   phone: "9876543210"
+  // );
 
   @override
   void onInit() {
@@ -31,15 +33,22 @@ class UserController extends GetxController{
     
   }
 
-  Future fetchProfile({bool enableLoading = false})async{
+  Future<bool?> fetchProfile({ String? userId ,bool enableLoading = false})async{
     if(enableLoading){
       _loading(true);
     }
-    await Future.delayed(Duration(milliseconds: 2000));
-    _user(_testUser);
-    // final result = await UserService.getProfile(token: UserPrefs.token!);
-    // _user(result);
-    
+    if(userId==null){
+      userId = user?.id;
+    }
+    if(userId==null){
+      _user(null);
+    }else{
+      final _usr = await UserService.getUser(userId);
+      _user(_usr);
+    }
+
+    // await Future.delayed(Duration(milliseconds: 2000));
+    // _user(_testUser);
     if(enableLoading){
       _loading(false);
     }
@@ -62,6 +71,7 @@ class UserController extends GetxController{
 
 
   Future logOut()async{
+    await FirebaseAuthService.signOut();
     _user(null);
     await UserPrefs.clearData();
     await Get.delete<BottomNavController>();

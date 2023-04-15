@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/splash_screen.dart';
+import 'package:get/get.dart';
 import 'firebase_options.dart';
 
 void main()async{
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Food',
       debugShowCheckedModeBanner: false,
       theme: Themes.lightTheme,

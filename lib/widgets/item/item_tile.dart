@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/models/item.dart';
+import 'package:food_delivery_app/screens/item_details_screen.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/cached_image_container.dart';
+import 'package:food_delivery_app/widgets/like_button.dart';
 import 'package:food_delivery_app/widgets/rating_tile.dart';
 
 
@@ -13,7 +16,9 @@ class ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){},
+      onTap: (){
+        AppNavigator.push(context, ItemDetailsScreen(item: item));
+      },
       child: Stack(
         alignment: Alignment.topRight,
         children: [
@@ -58,8 +63,10 @@ class ItemTile extends StatelessWidget {
                             child: Text(
                               item.name??'',
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           SizedBox(width: 4,),
@@ -100,18 +107,22 @@ class ItemTile extends StatelessWidget {
             ),
           ),
 
-          GestureDetector(
-            onTap: ()async{
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Icon(
-                CupertinoIcons.heart,
-                color: Colors.redAccent,
-                size: 30,
-              ),
-            ),
-          ),
+          LikeButton(
+            size: 30,
+          )
+
+          // GestureDetector(
+          //   onTap: ()async{
+          //   },
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(12.0),
+          //     child: Icon(
+          //       CupertinoIcons.heart,
+          //       color: Colors.redAccent,
+          //       size: 30,
+          //     ),
+          //   ),
+          // ),
 
           // if(showFav)
           //   Obx((){

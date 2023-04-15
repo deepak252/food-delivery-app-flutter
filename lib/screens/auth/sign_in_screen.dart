@@ -1,15 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/screens/auth/sign_up_screen.dart';
-import 'package:food_delivery_app/screens/dashboard.dart';
+import 'package:food_delivery_app/services/firebase_auth_service.dart';
+import 'package:food_delivery_app/splash_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/utils/keyboard_utils.dart';
 import 'package:food_delivery_app/utils/text_validator.dart';
 import 'package:food_delivery_app/widgets/app_icon_widget.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+import 'package:food_delivery_app/widgets/custom_loading_indicator.dart';
+import 'package:food_delivery_app/widgets/custom_snackbar.dart';
 import 'package:food_delivery_app/widgets/custom_text_field.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
@@ -95,11 +99,23 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(height: 36,),
                   CustomElevatedButton(
                     onPressed: ()async{
-                      AppNavigator.pushAndRemoveUntil(context, const Dashboard());
                       if(!_formkey.currentState!.validate()){
                         return;
                       }
-                      // customLoadingIndicator(context: context,canPop: false);
+                      try{
+                        customLoadingIndicator(context: context,canPop: false);
+                        final user = await FirebaseAuthService.signIn(
+                          email: _emailController.text.trim(), 
+                          password: _passwordController.text.trim()
+                        );
+                        Navigator.pop(context); //Dismiss loading indicator
+                        AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
+                        
+                      }catch(e,s){
+                        log("ERROR ",error: e, stackTrace: s);
+                        Navigator.pop(context); //Dismiss loading indicator
+                        CustomSnackbar.error(error: e);
+                      }
                       
                     },
                     text: "Sign In",

@@ -26,7 +26,7 @@ class FirestoreService{
 
   Future<DocumentSnapshot?> getDoc(String docId)async{
     try{
-      final docSnapshot = await _collection.doc(docId+"sdf").get();
+      final docSnapshot = await _collection.doc(docId).get();
       if(docSnapshot.exists){
         return docSnapshot;
       }

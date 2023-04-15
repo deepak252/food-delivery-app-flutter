@@ -15,12 +15,13 @@ class ItemService{
 
   static Future insertItems() async {
     try {
-      for(var jsonItem in _data ){
-        final item  = await addLocation(jsonItem);
+      for(int i=0;i<_data.length;i++){
+        final item  = await addLocation(_data[i]);
         if(item!=null){
           item.id = _itemDB.getRandomDocId();
           await _itemDB.setDoc(item.id, item.toJson());          
         }
+        log("Items Remaining : ${_data.length-i-1}");
       }
       _logger.message("insertItems", "All Items Uploaded");
     } catch (e,s) {
@@ -30,7 +31,7 @@ class ItemService{
 
   static Future<List<Item>?> getItems() async {
     try {
-      final docs = await _itemDB.getDocs(limit: 10);
+      final docs = await _itemDB.getDocs(limit: 2);
       if(docs!=null){
         return docs.map((doc) => 
           Item.fromJson(doc.data() as Map<String,dynamic>

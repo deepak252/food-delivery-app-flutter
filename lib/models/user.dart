@@ -1,63 +1,70 @@
 
 
-import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/cart.dart';
 
 class User {
-  final int id;
+  final String id;
   String? fullName;
   String? email;
-  String? mobile;
+  String? phone;
   String? profilePic;
-  List<String>? favItems;
-  List<Cart>? cartItems;
+  List<String> favItems;
+  List<Cart> cartItems;
   
   User({
     required this.id,
     this.fullName,
     this.email,
-    this.mobile,
+    this.phone,
     this.profilePic,
-    this.favItems,
-    this.cartItems
+    this.favItems = const [],
+    this.cartItems =  const []
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],
     fullName: json["fullName"],
     email: json["email"],
-    mobile: json["mobile"],
+    phone: json["phone"],
     profilePic: json["profilePic"],
+    favItems: json["favItems"] != null
+      ? List<String>.from(json["favItems"].map((x) => x))
+      : [],
+    cartItems: json["cartItems"] != null
+      ? List<Cart>.from(json["cartItems"].map((x) => x))
+      : [],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "fullName": fullName,
     "email": email,
-    "mobile": mobile,
+    "phone": phone,
     "profilePic": profilePic,
+    "favItems": List<String>.from(favItems.map((x) => x)),
+    "cartItems": List<Cart>.from(cartItems.map((x) => x)),
   };
 
-  User copyWith({
-    int? id,
-    String? token,
-    String? fullName,
-    String? email,
-    String? mobile,
-    String? profilePic,
-    String? fcmToken,
-    Address? address,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
-    return User(
-      id: id ?? this.id,
-      fullName: fullName ?? this.fullName,
-      email: email ?? this.email,
-      mobile: mobile ?? this.mobile,
-      profilePic: profilePic ?? this.profilePic,
-    );
-  }
+  // User copyWith({
+  //   String? id,
+  //   String? token,
+  //   String? fullName,
+  //   String? email,
+  //   String? phone,
+  //   String? profilePic,
+  //   String? fcmToken,
+  //   Address? address,
+  //   DateTime? createdAt,
+  //   DateTime? updatedAt,
+  // }) {
+  //   return User(
+  //     id: id ?? this.id,
+  //     fullName: fullName ?? this.fullName,
+  //     email: email ?? this.email,
+  //     phone: phone ?? this.phone,
+  //     profilePic: profilePic ?? this.profilePic,
+  //   );
+  // }
 }
 
 
@@ -71,7 +78,7 @@ class User {
 //   String? token;
 //   String? fullName;
 //   String? email;
-//   String? mobile;
+//   String? phone;
 //   String? profilePic;
 //   String? fcmToken;
 //   Address? address;
@@ -87,7 +94,7 @@ class User {
 //     this.token,
 //     this.fullName,
 //     this.email,
-//     this.mobile,
+//     this.phone,
 //     this.profilePic,
 //     this.fcmToken,
 //     this.address,
@@ -101,7 +108,7 @@ class User {
 //     token: json["token"],
 //     fullName: json["fullName"],
 //     email: json["email"],
-//     mobile: json["mobile"],
+//     phone: json["phone"],
 //     profilePic: json["profilePic"],
 //     fcmToken: json["fcmToken"],
 //     address: json["address"]!=null 
@@ -117,7 +124,7 @@ class User {
 //     "token": token,
 //     "fullName": fullName,
 //     "email": email,
-//     "mobile": mobile,
+//     "phone": phone,
 //     "profilePic": profilePic,
 //     "fcmToken": fcmToken,
 //     "address": address?.toJson(),
@@ -130,7 +137,7 @@ class User {
 //     String? token,
 //     String? fullName,
 //     String? email,
-//     String? mobile,
+//     String? phone,
 //     String? profilePic,
 //     String? fcmToken,
 //     Address? address,
@@ -142,7 +149,7 @@ class User {
 //       token: token ?? this.token,
 //       fullName: fullName ?? this.fullName,
 //       email: email ?? this.email,
-//       mobile: mobile ?? this.mobile,
+//       phone: phone ?? this.phone,
 //       profilePic: profilePic ?? this.profilePic,
 //       fcmToken: fcmToken ?? this.fcmToken,
 //       address: address ?? this.address,

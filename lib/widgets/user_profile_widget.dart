@@ -47,7 +47,7 @@ class UserProfileWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Text(
-            user?.mobile??'',
+            user?.phone??'',
             style: const TextStyle(
               fontSize: 14
             ),
