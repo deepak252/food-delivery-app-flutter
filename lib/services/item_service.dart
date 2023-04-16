@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:food_delivery_app/models/cart.dart';
+import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';

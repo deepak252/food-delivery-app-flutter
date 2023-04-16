@@ -12,7 +12,7 @@ class Item {
   List<String> images;
   String? descEnglish;
   String? descHindi;
-  double? price;
+  double price;
   List<ItemReview> reviews;
   Address? location;
   int? stock;
@@ -25,7 +25,7 @@ class Item {
     this.images=const [],
     this.descEnglish,
     this.descHindi,
-    this.price,
+    required this.price,
     this.reviews= const [],
     this.location,
     this.stock=0
@@ -45,7 +45,7 @@ class Item {
             ? List<String>.from(json["images"].map((x) => x.toString()))
             : [],
     reviews: json["reviews"] != null
-            ? List<ItemReview>.from(json["reviews"].map((x) => x))
+            ? List<ItemReview>.from(json["reviews"].map((x) => ItemReview.fromJson(x)))
             : [],
     location: Address.fromJson(json["location"]),
     stock: json["stock"],
@@ -61,7 +61,7 @@ class Item {
     "descEnglish": descEnglish,
     "descHindi": descHindi,
     "price": price,
-    "reviews": List<ItemReview>.from(reviews.map((x) => x)),
+    "reviews": List<ItemReview>.from(reviews.map((x) => x.toJson())),
     "location": location?.toJson(),
     "stock" : stock
   };

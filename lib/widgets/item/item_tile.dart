@@ -81,7 +81,7 @@ class ItemTile extends StatelessWidget {
                         ),
                         SizedBox(height: 4,),
                         Text(
-                          "${item.category.join(', ')}"*2,
+                          "${item.category.join(', ')}",
                           style: const TextStyle(
                             fontSize: 13, 
                           ), 

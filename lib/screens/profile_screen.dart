@@ -1,8 +1,11 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/models/user.dart';
+import 'package:food_delivery_app/screens/fav_items_screen.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/cached_image_container.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
 import 'package:food_delivery_app/widgets/not_signed_in.dart';
@@ -39,11 +42,29 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
             return NotSignedIn();
           }
           final user = _userController.user!;
-          return Column(
+          return ListView(
+            padding: EdgeInsets.symmetric(horizontal: 12),
             children: [
               UserProfileWidget(
                 user: user,
               ),
+              SizedBox(height: 20,),
+              optionWidget(
+                label: "My Orders",
+                icon: CupertinoIcons.bag,
+                onTap: (){
+                  
+                }
+              ),
+              Divider(),
+              optionWidget(
+                label: "My Favorites",
+                icon: CupertinoIcons.heart,
+                onTap: (){
+                  AppNavigator.push(context, FavItemsScreen());
+                }
+              ),
+              Divider(),
 
             ],
           );
@@ -53,6 +74,29 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     );
   }
 
+
+  Widget optionWidget({
+    required String label,
+    required IconData icon,
+    VoidCallback? onTap,
+  }){
+    return ListTile(
+      onTap: onTap,
+      tileColor: Colors.white,
+      title: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 18
+        ),
+      ),
+      leading: Icon(
+        icon,
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+      ),
+    );
+  }
 
   
 

@@ -29,7 +29,6 @@ class _FavItemsScreenState extends State<FavItemsScreen> {
   Future fetchFavItems()async{
     await _itemController.fetchFavItems(
       favItemIds :  _userController.getFavItemIds,
-      enableLoading: true
     );
   }
 

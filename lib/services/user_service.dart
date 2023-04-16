@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/user.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/logger.dart';
@@ -57,6 +58,37 @@ class UserService{
     }
     return false;
   }
+
+  static Future<bool> updateCart({
+    required String userId, 
+    required List<CartItem> cartItems, 
+    }) async {
+    try {
+      return await _userDB.updateDoc(userId, {
+        "cartItems": cartItems.map((e){
+          final item = CartItem(itemId: e.itemId, quantity: e.quantity);
+          return item.toJson();
+        }).toList()
+      });
+    } catch (e,s) {
+      _logger.error("updateCart", error: e, stackTrace : s);
+    }
+    return false;
+  }
+
+  // static Future<bool> removeItemFromCart({
+  //   required String userId, 
+  //   required String itemId, 
+  //   }) async {
+  //   try {
+  //     return await _userDB.updateDoc(userId, {
+  //       "cartItems": FieldValue.arrayRemove([itemId])
+  //     });
+  //   } catch (e,s) {
+  //     _logger.error("removeItemFromCart", error: e, stackTrace : s);
+  //   }
+  //   return false;
+  // }
 
   
 }
