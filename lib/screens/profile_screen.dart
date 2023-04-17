@@ -1,13 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
-import 'package:food_delivery_app/models/user.dart';
 import 'package:food_delivery_app/screens/fav_items_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
-import 'package:food_delivery_app/widgets/cached_image_container.dart';
-import 'package:food_delivery_app/widgets/no_result_widget.dart';
 import 'package:food_delivery_app/widgets/not_signed_in.dart';
 import 'package:food_delivery_app/widgets/user_profile_widget.dart';
 import 'package:get/get.dart';

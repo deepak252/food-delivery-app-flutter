@@ -7,7 +7,6 @@ import 'package:food_delivery_app/screens/item_details_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/cached_image_container.dart';
 import 'package:food_delivery_app/widgets/cart_counter.dart';
-import 'package:food_delivery_app/widgets/like_button.dart';
 import 'package:food_delivery_app/widgets/rating_tile.dart';
 import 'package:get/get.dart';
 
@@ -22,9 +21,9 @@ class CartItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx((){
       // bool isFav = _userController.getFavItemIds.contains(item.id);
-      bool itemInCart = _userController.isItemInCart(item.id);
+      // bool itemInCart = _userController.isItemInCart(item.id);
       int cartItemQty = _userController.getCartItemQty(item.id);
-      bool loadingItem = _userController.loadingSingleItem(item.id);
+      // bool loadingItem = _userController.loadingSingleItem(item.id);
       
       return GestureDetector(
         onTap: (){
@@ -44,7 +43,7 @@ class CartItemTile extends StatelessWidget {
             ),]
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
                 flex: 2,

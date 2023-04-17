@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/screens/auth/sign_up_screen.dart';
 import 'package:food_delivery_app/services/firebase_auth_service.dart';
-import 'package:food_delivery_app/splash_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/utils/keyboard_utils.dart';
 import 'package:food_delivery_app/utils/text_validator.dart';
@@ -104,13 +103,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       }
                       try{
                         customLoadingIndicator(context: context,canPop: false);
-                        final user = await FirebaseAuthService.signIn(
+                        await FirebaseAuthService.signIn(
                           email: _emailController.text.trim(), 
                           password: _passwordController.text.trim()
                         );
-                        Navigator.pop(context); //Dismiss loading indicator
-                        AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
-                        
+                        // Sign In Successful
+                        Navigator.pop(context); // Dismiss loading indicator
+                        // AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
                       }catch(e,s){
                         log("ERROR ",error: e, stackTrace: s);
                         Navigator.pop(context); //Dismiss loading indicator

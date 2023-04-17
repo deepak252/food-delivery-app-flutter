@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';

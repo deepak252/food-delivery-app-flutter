@@ -1,10 +1,6 @@
-import 'dart:developer';
 
-// import 'package:adopt_us/models/geo_location.dart';
-import 'package:food_delivery_app/models/address.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 
 class LocationUtils{
   static final _geocoding = GeocodingPlatform.instance;

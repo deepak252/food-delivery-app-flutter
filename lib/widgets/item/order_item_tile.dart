@@ -6,7 +6,6 @@ import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/screens/item_details_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/cached_image_container.dart';
-import 'package:food_delivery_app/widgets/cart_counter.dart';
 import 'package:food_delivery_app/widgets/rating_tile.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +39,7 @@ class OrderItemTile extends StatelessWidget {
             ),]
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
                 flex: 2,
@@ -48,7 +47,7 @@ class OrderItemTile extends StatelessWidget {
                   imgUrl: item.images.isNotEmpty
                   ? item.images.first
                   : Constants.defaultPic,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   width: double.infinity,
                   height: 100,
                 ),

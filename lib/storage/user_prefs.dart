@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:food_delivery_app/utils/logger.dart';
 import 'package:get_storage/get_storage.dart';
 

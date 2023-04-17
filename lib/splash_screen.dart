@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // init();
     authStream();
     super.initState();
   }
@@ -31,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     FirebaseAuthService.authStateChanges.listen((user)async{
       log("**** AUTH STATE CHANGED ****** : ${user}");
       if(user?.uid!=null){
+        await Future.delayed(Duration(milliseconds: 10));
         _loading.value=true;
         await _userController.fetchProfile(
           userId: user?.uid

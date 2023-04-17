@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';
@@ -11,7 +9,6 @@ class ItemService{
   static final _logger = Logger("ItemService");
 
   static final _itemDB = FirestoreService("items");
-  static final _userDB = FirestoreService("users");
 
   // Only for Development
   static Future insertItems() async {

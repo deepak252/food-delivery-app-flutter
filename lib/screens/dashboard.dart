@@ -4,7 +4,6 @@ import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/screens/cart_screen.dart';
 import 'package:food_delivery_app/screens/home_screen.dart';
 import 'package:food_delivery_app/screens/profile_screen.dart';
-import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/app_drawer.dart';
 import 'package:get/get.dart';
 

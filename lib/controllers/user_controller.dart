@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
 import 'package:food_delivery_app/models/cart_item.dart';

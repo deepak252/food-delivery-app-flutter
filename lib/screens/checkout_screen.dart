@@ -4,7 +4,6 @@ import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
-import 'package:food_delivery_app/widgets/item/cart_item_tile.dart';
 import 'package:food_delivery_app/widgets/item/order_item_tile.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
 import 'package:get/get.dart';
