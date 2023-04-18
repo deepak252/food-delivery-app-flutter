@@ -21,6 +21,22 @@ class UserService{
     return null;
   }
 
+  static Future<bool?> updateUser(User user) async {
+    try {
+      final userJson = user.toJson();
+      userJson.remove("cartItems");
+      userJson.remove("favItems");
+      return await _userDB.updateDoc(
+        user.id, 
+        userJson
+      );
+    } catch (e,s) {
+      _logger.error("updateUser", error: e, stackTrace : s);
+    }
+    return null;
+  }
+
+  //For new registered users
   static Future insertUser(User user) async {
     try {
       await _userDB.setDoc(user.id,user.toJson());    
@@ -75,20 +91,6 @@ class UserService{
     }
     return false;
   }
-
-  // static Future<bool> removeItemFromCart({
-  //   required String userId, 
-  //   required String itemId, 
-  //   }) async {
-  //   try {
-  //     return await _userDB.updateDoc(userId, {
-  //       "cartItems": FieldValue.arrayRemove([itemId])
-  //     });
-  //   } catch (e,s) {
-  //     _logger.error("removeItemFromCart", error: e, stackTrace : s);
-  //   }
-  //   return false;
-  // }
 
   
 }

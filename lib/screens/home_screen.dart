@@ -1,7 +1,15 @@
 
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/config/constants.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
+import 'package:food_delivery_app/models/food_category.dart';
+import 'package:food_delivery_app/services/item_service.dart';
+import 'package:food_delivery_app/utils/location_utils.dart';
+import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+import 'package:food_delivery_app/widgets/food_category_tile.dart';
 
 import 'package:food_delivery_app/widgets/item/item_tile.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
@@ -43,13 +51,18 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             },
           );
         }
-        
+        final selectedCategory = _itemController.selectedCategory;
+
         // return CustomElevatedButton(
         //   text: "Location",
         //   onPressed: ()async{
+        //     // log("${_itemController.items[0].restaurantLocation?.toJson()}");
         //     // var addr = await LocationUtils.getAddressFromCoordinaties(
-        //     //   28.6409499, 77.2101718
+        //     //   28.6307279, 77.22129489999999
         //     // );
+        //     // log("${addr.toJson()}");
+        //     //   // 28.6409499, 77.2101718
+
         //     try{
         //       // ItemService.getItems();
         //       ItemService.insertItems();
@@ -63,23 +76,55 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         //   },    
         // );
 
-        return RefreshIndicator(
-          onRefresh: ()async{
-            await _itemController.fetchItems();
-          },
-          child: GridView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 6),
-            itemCount: _itemController.items.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
-              childAspectRatio: 0.8
+        return Column(
+          children: [
+            SizedBox(
+              height: 115,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.only(top: 4),
+                itemCount: Constants.foodCategories.length,
+                itemBuilder: (BuildContext context, int index){
+                  final category = Constants.foodCategories[index];
+                  return FoodCategoryTile(
+                    category : category,
+                    selected: selectedCategory==category,
+                    onTap: (){
+                      if(selectedCategory==category){
+                        _itemController.setCategory = FoodCategory('', '');
+                      }else{
+                        _itemController.setCategory = category;
+                      }
+                    },
+                  );
+                },
+              ),
             ),
-            itemBuilder: (BuildContext context, int index){
-              return ItemTile(
-                item : _itemController.items[index],
-              );
-            },
-          ),
+            Expanded(
+              flex: 5,
+              child: RefreshIndicator(
+                onRefresh: ()async{
+                  await _itemController.fetchItems();
+                },
+                child: GridView.builder(
+                  addAutomaticKeepAlives: true,
+                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  itemCount: _itemController.items.length,
+                  physics: BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
+                    childAspectRatio: 0.8
+                  ),
+                  itemBuilder: (BuildContext context, int index){
+                    return ItemTile(
+                      item : _itemController.items[index],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         );
         
       })

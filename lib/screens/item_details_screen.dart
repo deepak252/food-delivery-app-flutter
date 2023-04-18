@@ -98,9 +98,9 @@ class ItemDetailsScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 12,),
-                            if(item.resName!=null)
+                            if(item.restaurantLocation!=null)
                               Text(
-                                "${item.resName}",
+                                "${item.restaurantName}",
                                 style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold
@@ -111,7 +111,7 @@ class ItemDetailsScreen extends StatelessWidget {
                                 const Icon(Icons.location_pin,size: 16,),
                                 Flexible(
                                   child: Text(
-                                    "${item.location?.name}",
+                                    "${item.restaurantLocation?.completeAddress}",
                                     style: const TextStyle(
                                       fontSize: 14
                                     ),

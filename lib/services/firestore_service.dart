@@ -24,7 +24,7 @@ class FirestoreService{
     return false;
   }
 
-  Future<bool> updateDoc(String docId, Map<Object,Object> data)async{
+  Future<bool> updateDoc(String docId, Map<String,dynamic> data)async{
     try{
       await _collection.doc(docId).update(
         data

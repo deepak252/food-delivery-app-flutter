@@ -1,5 +1,6 @@
 
 
+import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/cart_item.dart';
 
 class User {
@@ -8,6 +9,7 @@ class User {
   String? email;
   String? phone;
   String? profilePic;
+  Address? address;
   List<String> favItems;
   List<CartItem> cartItems;
   
@@ -17,6 +19,7 @@ class User {
     this.email,
     this.phone,
     this.profilePic,
+    this.address,
     this.favItems = const [],
     this.cartItems =  const []
   });
@@ -27,6 +30,9 @@ class User {
     email: json["email"],
     phone: json["phone"],
     profilePic: json["profilePic"],
+    address: json["address"]!=null
+     ? Address.fromJson(json["address"])
+     : null,
     favItems: json["favItems"] != null
       ? List<String>.from(json["favItems"].map((x) => x))
       : [],
@@ -41,30 +47,32 @@ class User {
     "email": email,
     "phone": phone,
     "profilePic": profilePic,
-    "favItems": List<String>.from(favItems.map((x) => x)),
-    "cartItems": List<CartItem>.from(cartItems.map((x) => x.toJson())),
+    "address": address?.toJson(),
+    "favItems": List.from(favItems.map((x) => x)),
+    "cartItems": List.from(cartItems.map((x) => x.toJson())),
   };
 
-  // User copyWith({
-  //   String? id,
-  //   String? token,
-  //   String? fullName,
-  //   String? email,
-  //   String? phone,
-  //   String? profilePic,
-  //   String? fcmToken,
-  //   Address? address,
-  //   DateTime? createdAt,
-  //   DateTime? updatedAt,
-  // }) {
-  //   return User(
-  //     id: id ?? this.id,
-  //     fullName: fullName ?? this.fullName,
-  //     email: email ?? this.email,
-  //     phone: phone ?? this.phone,
-  //     profilePic: profilePic ?? this.profilePic,
-  //   );
-  // }
+  User copyWith({
+    String? id,
+    String? fullName,
+    String? email,
+    String? phone,
+    String? profilePic,
+    Address? address,
+    List<String>? favItems,
+    List<CartItem>? cartItems,
+  }) {
+    return User(
+      id: id ?? this.id,
+      fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      profilePic: profilePic ?? this.profilePic,
+      address: address ?? this.address,
+      favItems: favItems ?? this.favItems,
+      cartItems: cartItems ?? this.cartItems,
+    );
+  }
 }
 
 

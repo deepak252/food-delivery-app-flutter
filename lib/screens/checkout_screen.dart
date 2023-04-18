@@ -1,9 +1,15 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/utils/location_utils.dart';
+import 'package:food_delivery_app/widgets/address_bottom_sheet.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+import 'package:food_delivery_app/widgets/custom_loading_indicator.dart';
+import 'package:food_delivery_app/widgets/custom_snackbar.dart';
 import 'package:food_delivery_app/widgets/item/order_item_tile.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
 import 'package:get/get.dart';
@@ -57,25 +63,97 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
             },
           );
         }
-        
-        return RefreshIndicator(
-          onRefresh: fetchCartItems,
-          child : ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 6),
-            itemCount: _itemController.cartItems.length+1,
-            itemBuilder: (BuildContext context, int index){
-              if(index==_itemController.cartItems.length){
-                return billingDetails(
-                  _itemController.cartTotalPrice
-                );
-              }
-              if(_itemController.cartItems[index].item==null){
-                return SizedBox();
-              }
-              return OrderItemTile(
-                item : _itemController.cartItems[index].item!,
-              );
-            },
+
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Delivery Address",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.location_pin,size: 20,),
+                  SizedBox(width: 4,),
+                  Expanded(
+                    child: Text(
+                      "${_userController.user?.address?.completeAddress}",
+                      style: const TextStyle(
+                        fontSize: 14, 
+                        // fontWeight: FontWeight.bold,
+                        color: Themes.colorPrimary
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    onPressed: ()async{
+                      try{
+                        customLoadingIndicator(context: context, canPop: false);
+                        var location =await LocationUtils.getCurrentLocation();
+                        Navigator.pop(context);
+                        if(location==null){
+                          throw "Couldn't find location";
+                        }
+                        log("Current Location : ${location.toJson()}");
+                        await showAddressBottomSheet(
+                          location
+                        );
+                      }catch(e,s){
+                        log("Error",error: e,stackTrace: s);
+                        CustomSnackbar.error(error: e);
+                        await showAddressBottomSheet(
+                          _userController.user?.address
+                        );
+                      }
+                      
+                    }, 
+                    icon: Icon(
+                      _userController.user?.address!=null
+                      ? Icons.edit
+                      : Icons.add,
+                      size: 28,
+                      color: Themes.colorPrimary,
+                    )
+                  ),
+                ],
+              ),
+              SizedBox(height: 12,),
+              Text(
+                "Billing",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              billingDetails(
+                _itemController.cartTotalPrice
+              ),
+              SizedBox(height: 12,),
+              Text(
+                "Items",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _itemController.cartItems.length,
+                  itemBuilder: (BuildContext context, int index){
+                    if(_itemController.cartItems[index].item==null){
+                      return SizedBox();
+                    }
+                    return OrderItemTile(
+                      item : _itemController.cartItems[index].item!,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 65,),
+            ],
           ),
         );
       }),
@@ -121,15 +199,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
       margin: EdgeInsets.symmetric(horizontal: 6,vertical: 6),
       decoration: BoxDecoration(
-        // color: Colors.white,
         color: Themes.colorPrimary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
-        // boxShadow: [ 
-        //   BoxShadow(
-        //   color: Colors.black.withAlpha(20), 
-        //   spreadRadius: 1, 
-        //   blurRadius: 5,
-        // ),],
         border:  Border.all(
           color: Themes.colorPrimary
         )

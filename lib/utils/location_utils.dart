@@ -1,4 +1,8 @@
 
+import 'dart:developer';
+
+import 'package:food_delivery_app/models/address.dart';
+import 'package:food_delivery_app/utils/num_utils.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -32,24 +36,25 @@ class LocationUtils{
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  // static Future<Address> getAddressFromCoordinaties(double latitude, double longitude) async {
-  //   List<Placemark> placemarks = await _geocoding
-  //       .placemarkFromCoordinates(latitude, longitude);
+  static Future<Address> getAddressFromCoordinaties(double latitude, double longitude) async {
+    List<Placemark> placemarks = await _geocoding
+        .placemarkFromCoordinates(latitude, longitude);
 
-  //   Placemark place = placemarks[0];
-  //   log("${place}");
-  //   Address location = Address(
-  //     name: place.name??'',
-  //     sublocality: place.subLocality??'',
-  //     city: place.locality ?? '',
-  //     country: place.country ?? '',
-  //     state: place.administrativeArea ?? '',
-  //     pincode: place.postalCode??'',
-  //     latitude: latitude.toPrecision(4), 
-  //     longitude: longitude.toPrecision(4), 
-  //   );
-  //   return location;
-  // }
+    Placemark place = placemarks[0];
+    log("${place}");
+    Address location = Address(
+      name: place.name,
+      sublocality: place.subLocality,
+      city: place.locality,
+      country: place.country,
+      state: place.administrativeArea,
+      pincode: place.postalCode,
+      lat: NumUtils.parseDouble(latitude,precision: 8), 
+      lng: NumUtils.parseDouble(longitude, precision: 8), 
+      //  latitude.toPrecision(4)
+    );
+    return location;
+  }
 
   static Future<Location?> getCoordinatesFromAddress(String? address) async {
     final loc = await _geocoding.locationFromAddress(address??'');
@@ -60,21 +65,20 @@ class LocationUtils{
   }
 
   //Get device location
-  // static Future<GeoLocation?> getCurrentLocation() async {
-  //   try {
-  //     Position position = await getGeoLocationPosition();
-  //     // final location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
-  //     final location = await getAddressFromCoordinaties(
-  //       position.latitude,
-  //       position.longitude
-  //     );
-  //     return location;
-  //   } on Exception catch (e,s) {
-  //     log("Error : LocationService-> getCurrentLocation,", error:  e,stackTrace: s);
-  //     return Future.error(e);
-  //   }
-  // }
-
+  static Future<Address?> getCurrentLocation() async {
+    try {
+      Position position = await getGeoLocationPosition();
+      // final location = 'Lat: ${position.latitude} , Long: ${position.longitude}';
+      final location = await getAddressFromCoordinaties(
+        position.latitude,
+        position.longitude
+      );
+      return location;
+    } on Exception catch (e,s) {
+      log("Error : LocationService-> getCurrentLocation,", error:  e,stackTrace: s);
+      // return Future.error(e);
+    }
+  }
 
   static double distanceInMetres(double lat1,double lng1,double lat2,double lng2){
     return double.parse(Geolocator.distanceBetween(lat1, lng1, lat2, lng2).toStringAsFixed(4));

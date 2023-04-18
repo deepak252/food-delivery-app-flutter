@@ -106,6 +106,7 @@ class CartItemTile extends StatelessWidget {
                         children: [
                           CartCounter(
                             qty: cartItemQty,
+                            densed: true,
                             onPressIncr: ()async{
                               await _userController.updateCartItemQty(item.id, cartItemQty+1);
                             },

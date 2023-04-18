@@ -5,7 +5,12 @@ class CartCounter extends StatelessWidget {
   final int qty;
   final VoidCallback? onPressIncr;
   final VoidCallback? onPressDecr;
-  const CartCounter({this.qty=1, this.onPressDecr, this.onPressIncr, super.key});
+  final bool densed;
+  const CartCounter({
+    this.qty=1, 
+    this.onPressDecr, 
+    this.onPressIncr, 
+    this.densed=false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +26,9 @@ class CartCounter extends StatelessWidget {
         children :[
           IconButton(
             onPressed: onPressDecr, 
+            visualDensity: densed 
+            ? VisualDensity.compact
+            : null,
             icon: Icon(
               Icons.remove,
               size: 20,
@@ -36,6 +44,9 @@ class CartCounter extends StatelessWidget {
           ),
           IconButton(
             onPressed: onPressIncr,
+            visualDensity: densed 
+            ? VisualDensity.compact
+            : null,
             icon: Icon(
               Icons.add,
               size: 20,

@@ -1,10 +1,15 @@
 import 'package:food_delivery_app/models/cart_item.dart';
+import 'package:food_delivery_app/models/food_category.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/item_service.dart';
 import 'package:get/get.dart';
 
 /// For the STATE of food items.
 class ItemController extends GetxController {
+
+  final _selectedCategory = Rxn<FoodCategory>();
+  FoodCategory? get selectedCategory => _selectedCategory.value;
+  set setCategory(FoodCategory? category) => _selectedCategory(category);
 
   final _loadingItems = false.obs;
   bool get isLoadingItems => _loadingItems.value;

@@ -64,6 +64,21 @@ class UserController extends GetxController{
     }
   }
 
+  Future<bool?> updateProfile({ required User updatedUser ,bool enableLoading = false})async{
+    if(enableLoading){
+      _loading(true);
+    }
+    bool? res = await UserService.updateUser(updatedUser);
+    if(res==true){
+      _logger.message("updateProfile", "User Profile Updated");
+      await fetchProfile();
+      return true;
+    }
+    if(enableLoading){
+      _loading(false);
+    }
+  }
+
   Future addItemToFav(String itemId)async{
     if(!isSignedIn){
       _logger.message("addItemToFav", "Not Signed In!");
@@ -192,15 +207,6 @@ class UserController extends GetxController{
       });
     }
     _loadingSigleItem[itemId] = false;
-  }
-
-
-  Future<bool> updateProfile(Map<String,dynamic> data)async{
-    if(user!=null){
-      _user(user);
-      return true;
-    }
-    return false;
   }
 
 

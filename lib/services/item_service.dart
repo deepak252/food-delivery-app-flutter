@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';
@@ -83,11 +84,13 @@ class ItemService{
     try{
       final item = Item.fromJson(jsonItem);
       final loc = await LocationUtils.getCoordinatesFromAddress(
-        item.location?.address
+        item.restaurantLocation?.completeAddress
       );
       if(loc!=null){
-        item.location!.lat = loc.latitude;
-        item.location!.lng = loc.longitude;
+        final address = await LocationUtils.getAddressFromCoordinaties(
+           loc.latitude, loc.longitude);
+        address.completeAddress = item.restaurantLocation?.completeAddress;
+        item.restaurantLocation = address;
       }else{
         throw "Invalid Location";
       }
@@ -97,6 +100,25 @@ class ItemService{
     }
     return null;
   }
+
+  // static Future<Item?> _addLocation(Map<String, dynamic> jsonItem)async{
+  //   try{
+  //     final item = Item.fromJson(jsonItem);
+  //     final loc = await LocationUtils.getCoordinatesFromAddress(
+  //       item.restaurantLocation?.address
+  //     );
+  //     if(loc!=null){
+  //       item.restaurantLocation!.lat = loc.latitude;
+  //       item.restaurantLocation!.lng = loc.longitude;
+  //     }else{
+  //       throw "Invalid Location";
+  //     }
+  //     return item;
+  //   }catch(e,s){
+  //     _logger.error("addLocation", error: e, stackTrace: s);
+  //   }
+  //   return null;
+  // }
 }
 
 

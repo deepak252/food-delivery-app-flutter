@@ -44,9 +44,7 @@ class ItemTile extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CachedImageContainer(
-                      imgUrl: item.images.isNotEmpty
-                      ? item.images.first
-                      : Constants.defaultPic,
+                      imgUrl: item.images.first,
                       borderRadius: BorderRadius.circular(14),
                       width: double.infinity,
                       height: 190,

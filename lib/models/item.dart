@@ -7,34 +7,34 @@ class Item {
   String id;
   String? name;
   ///Restaurant Name
-  String? resName;
+  String? restaurantName;
   List<String> category;
   List<String> images;
   String? descEnglish;
   String? descHindi;
   double price;
   List<ItemReview> reviews;
-  Address? location;
+  Address? restaurantLocation;
   int? stock;
   
   Item({
     required this.id,
     this.name,
-    this.resName,
+    this.restaurantName,
+    this.restaurantLocation,
     this.category =const [],
     this.images=const [],
     this.descEnglish,
     this.descHindi,
     required this.price,
     this.reviews= const [],
-    this.location,
     this.stock=0
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
     id: json["id"]??'',
     name: json["name"],
-    resName: json["resName"],
+    restaurantName: json["restaurantName"],
     category: json["category"] != null
             ? List<String>.from(json["category"].map((x) => x.toString()))
             : [],
@@ -47,7 +47,7 @@ class Item {
     reviews: json["reviews"] != null
             ? List<ItemReview>.from(json["reviews"].map((x) => ItemReview.fromJson(x)))
             : [],
-    location: Address.fromJson(json["location"]),
+    restaurantLocation: Address.fromJson(json["restaurantLocation"]),
     stock: json["stock"],
     
   );
@@ -55,14 +55,14 @@ class Item {
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "resName": resName,
+    "restaurantName": restaurantName,
     "category": List<String>.from(category.map((x) => x)),
     "images": List<String>.from(images.map((x) => x)),
     "descEnglish": descEnglish,
     "descHindi": descHindi,
     "price": price,
-    "reviews": List<ItemReview>.from(reviews.map((x) => x.toJson())),
-    "location": location?.toJson(),
+    "reviews": List.from(reviews.map((x) => x.toJson())),
+    "restaurantLocation": restaurantLocation?.toJson(),
     "stock" : stock
   };
 }

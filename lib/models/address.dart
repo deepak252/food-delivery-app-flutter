@@ -1,70 +1,108 @@
 import 'package:food_delivery_app/utils/num_utils.dart';
 
+
 class Address {
-    Address({
-        required this.name,
-        required this.address,
-        required this.lat,
-        required this.lng,
-    });
+  String? completeAddress;
+  String? name;
+  String? sublocality;
+  String? state;
+  String? city;
+  String? country;
+  String? pincode;
+  double lng;
+  double lat;
 
-    String name;
-    String address;
-    double lat;
-    double lng;
+  Address({
+    this.completeAddress,
+    this.name,
+    this.sublocality,
+    this.city, 
+    this.state, 
+    this.country,
+    this.pincode,
+    required this.lng,
+    required this.lat
+  }){
+    completeAddress = getCompleteAddress;
+  }
 
-    factory Address.fromJson(Map<String, dynamic> json) => Address(
-        name: json["name"],
-        address: json["address"],
-        lat: NumUtils.parseDouble(json["lat"]),
-        lng: NumUtils.parseDouble(json["lng"]),
-    );
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+      completeAddress: json["completeAddress"],
+      name: json["name"],
+      sublocality: json["sublocality"],
+      city: json["city"],
+      state: json["state"],
+      country: json["country"],
+      pincode: json["pincode"],
+      lat: NumUtils.parseDouble(json["lat"]),
+      lng: NumUtils.parseDouble(json["lat"]),
+  );
+
 
     Map<String, dynamic> toJson() => {
+        "completeAddress": completeAddress,
         "name": name,
-        "address": address,
+        "sublocality": sublocality,
+        "city": city,
+        "state": state,
+        "country": country,
+        "pincode": pincode,
         "lat": lat,
         "lng": lng,
     };
+
+  Address copyWith({
+    String? completeAddress,
+    String? name,
+    String? sublocality,
+    String? state,
+    String? city,
+    String? country,
+    String? pincode,
+    double? lng,
+    double? lat,
+  }) {
+    return Address(
+      completeAddress: completeAddress ?? this.completeAddress,
+      name: name ?? this.name,
+      sublocality: sublocality ?? this.sublocality,
+      state: state ?? this.state,
+      city: city ?? this.city,
+      country: country ?? this.country,
+      pincode: pincode ?? this.pincode,
+      lng: lng ?? this.lng,
+      lat: lat ?? this.lat,
+    );
+  }
 }
 
-// class Address {
-//   final String? name;
-//   final String? sublocality;
-//   final String? state;
-//   final String? city;
-//   final String? country;
-//   final String? pincode;
-//   final double longitude;
-//   final double latitude;
-
-//   Address({
-//     this.name,
-//     this.sublocality,
-//     this.state, 
-//     this.city, 
-//     this.country,
-//     this.pincode,
-//     required this.longitude,
-//     required this.latitude
-//   });
-
-//   factory Address.fromJson(Map<String, dynamic> json) => Address(
-//       city: json["city"],
-//       state: json["state"],
-//       country: json["country"],
-//       pincode: json["pincode"],
-//       latitude: double.tryParse(json["latitude"]??'')??0.0,
-//       longitude: double.tryParse(json["longitude"]??'')??0.0,
-//   );
-
-
-//     Map<String, dynamic> toJson() => {
-//         "city": city,
-//         "state": state,
-//         "country": country,
-//         "pincode": pincode,
-//         "latitude": latitude,
-//         "longitude": longitude,
-//     };
-// }
+extension AddrExtension on Address{
+  String? get getCompleteAddress{
+    if(completeAddress==null){
+      if(name!=null){
+        completeAddress = "$name";
+      }
+      if(sublocality!=null){
+        completeAddress = completeAddress!=null
+          ? "${completeAddress}, $sublocality"
+          : "$sublocality";
+      }
+      if(city!=null){
+        completeAddress = completeAddress!=null
+          ? "${completeAddress}, $city"
+          : "$city";
+      }
+      if(state!=null){
+        completeAddress = completeAddress!=null
+          ? "${completeAddress}, $state"
+          : "$state";
+      }
+      if(pincode!=null){
+        completeAddress = completeAddress!=null
+          ? "${completeAddress} - $pincode"
+          : null;
+      }
+    }
+    return completeAddress;
+  }
+}
