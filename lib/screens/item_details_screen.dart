@@ -1,22 +1,46 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
+import 'package:food_delivery_app/controllers/item_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/widgets/cart_counter.dart';
 import 'package:food_delivery_app/widgets/custom_carousel.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+import 'package:food_delivery_app/widgets/custom_outlined_button.dart';
+import 'package:food_delivery_app/widgets/custom_snackbar.dart';
+import 'package:food_delivery_app/widgets/item/item_review_tile.dart';
 import 'package:food_delivery_app/widgets/like_button.dart';
+import 'package:food_delivery_app/widgets/rating_tile.dart';
+import 'package:food_delivery_app/widgets/review_item_dialog.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ItemDetailsScreen extends StatelessWidget {
+class ItemDetailsScreen extends StatefulWidget {
   final Item item;
   ItemDetailsScreen({ Key? key, required this.item}) : super(key: key);
 
+  @override
+  State<ItemDetailsScreen> createState() => _ItemDetailsScreenState();
+}
+
+class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   final _userController = Get.find<UserController>();
+  final _itemController = Get.find<ItemController>();
   final _bottomNavController= Get.find<BottomNavController>();
+
+  late Item item;
+
+  @override
+  void initState() {
+    item = widget.item;
+    _itemController.fetchSpecificItem(item.id);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +49,10 @@ class ItemDetailsScreen extends StatelessWidget {
         bool isFav = _userController.getFavItemIds.contains(item.id);
         bool itemInCart = _userController.isItemInCart(item.id);
         int cartItemQty = _userController.getCartItemQty(item.id);
-        bool loadingItem = _userController.loadingSingleItem(item.id);
+        bool loadingItem = _userController.loadingSingleItem(item.id)
+         || _itemController.loadingSingleItem(item.id);
         bool isHindi = _userController.isHindiDesc;
+        item = _itemController.getItemById(item.id)??item;
         
         return Stack(
           children: [
@@ -82,14 +108,7 @@ class ItemDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 8,),
-                                Text(
-                                  '₹ ${item.price}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Themes.colorPrimary,
-                                    fontSize: 20
-                                  ),
-                                ),
+                                RatingTile(rating: item.rating),
                               ],
                             ),
                             Text(
@@ -99,43 +118,52 @@ class ItemDetailsScreen extends StatelessWidget {
 
                               ),
                             ),
-                            const SizedBox(height: 12,),
-                            if(item.restaurantLocation!=null)
-                              Text(
-                                "${item.restaurantName}",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            InkWell(
-                              borderRadius: BorderRadius.circular(6),
-                              onTap: ()async{
-                                final url = item.restaurantLocation?.mapUrl;
-                                
-                                if (url!=null && !await launchUrl(Uri.parse(url))) {
-
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 6),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.location_pin,size: 16,),
-                                    Flexible(
-                                      child: Text(
-                                        "${item.restaurantLocation?.completeAddress}",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Themes.colorPrimary
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            const SizedBox(height: 6,),
+                            Text(
+                              '₹ ${item.price}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Themes.colorPrimary,
+                                fontSize: 20
                               ),
                             ),
-                            const SizedBox(height: 16,),
+                            const SizedBox(height: 14,),
+                            
+                            Text(
+                              "${item.restaurantName}",
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            if(item.restaurantLocation!=null)
+                              InkWell(
+                                borderRadius: BorderRadius.circular(6),
+                                onTap: ()async{
+                                  final url = item.restaurantLocation?.mapUrl;
+                                  if (url!=null && !await launchUrl(Uri.parse(url))) {
+                                    log("Error");
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 6),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.location_pin,size: 16,),
+                                      Flexible(
+                                        child: Text(
+                                          "${item.restaurantLocation?.completeAddress}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Themes.colorPrimary
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 14,),
 
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -172,16 +200,14 @@ class ItemDetailsScreen extends StatelessWidget {
 
 
 
-
-
-                            const SizedBox(height: 16,),
+                            const SizedBox(height: 14,),
 
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "Reviews",
+                                    "Reviews (${item.reviews.length})",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15,
@@ -191,18 +217,41 @@ class ItemDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 8,),
-                                
+                                CustomOutlinedButton(
+                                  onPressed: ()async{
+                                    final res = await reviewItemDialog(
+                                      context
+                                    );
+                                    if(res!=null){
+                                      final rating = res["rating"];
+                                      final comment = res["comment"];
+                                      final reviewAdded = await _itemController.addItemReview(
+                                        itemId: item.id, 
+                                        review: ItemReview(
+                                          user: _userController.user!, 
+                                          rating: rating, 
+                                          comment: comment, 
+                                          createdAt: firestore.Timestamp.now().toDate(),
+                                        )
+                                      );
+                                      if(reviewAdded){
+                                        CustomSnackbar.success(msg: "Thanks for your review");
+                                      }else{
+                                        CustomSnackbar.error(error: "Something went wrong!");
+                                      }
+
+                                    }
+                                  },
+                                  text: "+ Add Review",
+                                  textSize: 13,
+                                  padding: EdgeInsets.all(6),
+                                  width: 0,
+                                )
                               ],
                             ),
                             const SizedBox(height: 6,),
-                            Text(
-                              isHindi
-                              ? "${item.descHindi}"
-                              : "${item.descEnglish}",
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
+                            for(var review in item.reviews)
+                              ItemReviewTile(review: review),
 
                           ],
                         ),
@@ -296,7 +345,7 @@ class ItemDetailsScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
             color: Themes.colorPrimary,
-            width: 2
+            width: 1
           ),
         ),
         child: Icon(

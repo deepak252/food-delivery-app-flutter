@@ -45,11 +45,6 @@ class _DashboardState extends State<Dashboard> {
                   CupertinoIcons.bars,
                   size: 30,
                 ),
-                // icon: Image.asset(
-                //   ImagePath.menu,
-                //   height: 28,
-                //   width: 28,
-                // ),
                 onPressed: (){
                   _scaffoldKey.currentState?.openDrawer();
                 },

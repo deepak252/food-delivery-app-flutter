@@ -10,7 +10,7 @@ class RatingTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric( horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: ratingColor,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -33,5 +33,14 @@ class RatingTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color get ratingColor{
+    final r = rating;
+    return r>=4
+      ? Colors.green 
+      : r>=2
+        ? Colors.orange
+        : Colors.grey;
   }
 }

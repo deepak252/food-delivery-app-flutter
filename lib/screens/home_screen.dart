@@ -27,8 +27,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
-    _itemController.fetchItems();
+    fetchItems();
     super.initState();
+  }
+
+  Future fetchItems()async{
+    await _itemController.fetchItems(
+      enableLoading: true
+    );
   }
 
   @override
@@ -103,9 +109,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             Expanded(
               flex: 5,
               child: RefreshIndicator(
-                onRefresh: ()async{
-                  await _itemController.fetchItems();
-                },
+                onRefresh: fetchItems,
                 child: GridView.builder(
                   addAutomaticKeepAlives: true,
                   padding: EdgeInsets.symmetric(horizontal: 6),

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';
@@ -70,9 +71,36 @@ class ItemService{
     return null;
   }
 
-  static Future<Item?> getItem(String itemId) async {
+  static Future<bool> addItemReview({
+    required String itemId,
+    required ItemReview review, 
+  }) async {
     try {
-      _itemDB.getDoc(itemId);
+      
+      final reviewJson = review.toJson();
+      try {
+        reviewJson["user"]?.remove("address");
+        reviewJson["user"]?.remove("favItems");
+        reviewJson["user"]?.remove("cartItems");
+      } catch (e,s) {
+        _logger.error("addItemReview", error: e, stackTrace : s);
+      }
+      log("ADDING REVIEW : $reviewJson");
+      return await _itemDB.updateDoc(itemId, {
+        "reviews": FieldValue.arrayUnion([reviewJson])
+      });
+    } catch (e,s) {
+      _logger.error("addItemReview", error: e, stackTrace : s);
+    }
+    return false;
+  }
+
+  static Future<Item?> getSpecificItem(String itemId) async {
+    try {
+      final doc = await _itemDB.getDoc(itemId);
+      if(doc!=null){
+        return Item.fromJson(doc.data() as Map<String,dynamic>);
+      }
     } catch (e,s) {
       _logger.error("getItem", error: e, stackTrace : s);
     }

@@ -1,6 +1,8 @@
 
 
 import 'package:food_delivery_app/models/address.dart';
+import 'package:food_delivery_app/models/user.dart';
+import 'package:food_delivery_app/utils/date_time_utils.dart';
 import 'package:food_delivery_app/utils/num_utils.dart';
 
 class Item {
@@ -69,34 +71,56 @@ class Item {
 
 class ItemReview {
     ItemReview({
-      required this.userName,
-      required this.profilePic,
+      required this.user,
       required this.rating,
       required this.comment,
+      required this.createdAt
     });
 
-    String userName;
-    String? profilePic;
+    User user;
     int rating;
     String comment;
+    DateTime createdAt;
 
     factory ItemReview.fromJson(Map<String, dynamic> json) => ItemReview(
-        userName: json["name"],
-        profilePic: json["profilePic"],
+        user: User.fromJson(json["user"]),
         rating: json["rating"],
         comment: json["comment"],
+        createdAt: DateTime.parse(json["createdAt"]??'').toLocal(),
     );
 
     Map<String, dynamic> toJson() => {
-        "name": userName,
-        "profilePic": profilePic,
+        "user" : user.toJson(),
         "rating": rating,
         "comment": comment,
+        "createdAt": createdAt.toIso8601String(),
     };
 }
 
 extension ExtItem on Item{
   double get rating{
-    return reviews.fold(0,(value, element) => value +element.rating);
+    if(reviews.isEmpty){
+      return 0;
+    }
+    final r = reviews.fold(0,(value, element) => value +element.rating)/reviews.length;
+    return NumUtils.parseDouble(r,precision: 1);
   }
+  
+}
+
+
+extension ExtItemReview on ItemReview{
+ 
+  String get date{
+    String d = DateTimeUtils.formatMMMDDYYYY(createdAt);
+    String cd = DateTimeUtils.formatMMMDDYYYY(DateTime.now());
+    if(d==cd){
+      return "Today";
+    }
+    return d;
+  }
+  String get time{
+    return DateTimeUtils.formatHHMM(createdAt);
+  }
+  
 }

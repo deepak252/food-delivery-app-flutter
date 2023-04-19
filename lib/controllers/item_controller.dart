@@ -1,13 +1,17 @@
+import 'dart:developer';
+
 import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/food_category.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/item_service.dart';
+import 'package:food_delivery_app/utils/logger.dart';
 import 'package:food_delivery_app/utils/num_utils.dart';
 import 'package:get/get.dart';
 
 /// For the STATE of food items.
 class ItemController extends GetxController {
-
+  final _logger = Logger("ItemController");
+  
   final _selectedCategory = Rxn<FoodCategory>();
   FoodCategory? get selectedCategory => _selectedCategory.value;
   set setCategory(FoodCategory? category) => _selectedCategory(category);
@@ -38,6 +42,23 @@ class ItemController extends GetxController {
   double get gstAmount => NumUtils.parseDouble(orderAmount*0.18, precision: 2);
   double get totalAmount => NumUtils.parseDouble(orderAmount*1.18,precision: 2);
 
+  Item? getItemById(String itemId){
+    int i;
+    i = items.indexWhere((e) => e.id == itemId);
+    if (i != -1) {
+      return items[i];
+    }
+    i = favItems.indexWhere((e) => e.id == itemId);
+    if (i != -1) {
+      return favItems[i];
+    }
+    i = cartItems.indexWhere((e) => e.item?.id == itemId);
+    if (i != -1) {
+      return cartItems[i].item;
+    }
+    return null;
+  }
+
   final _loadingSigleItem = {}.obs;
   bool loadingSingleItem(String itemId){
     return _loadingSigleItem[itemId]==true;
@@ -49,7 +70,7 @@ class ItemController extends GetxController {
     super.onInit();
   }
 
-  Future fetchItems({bool enableLoading = true}) async {
+  Future fetchItems({bool enableLoading = false}) async {
     if(enableLoading){
       _loadingItems(true);
     }
@@ -58,6 +79,63 @@ class ItemController extends GetxController {
 
     if(enableLoading){
       _loadingItems(false);
+    }
+  }
+
+  Future addItemReview({required String itemId, required ItemReview review})async{
+    _loadingSigleItem[itemId] = true;
+    final res = await ItemService.addItemReview(
+      itemId: itemId,
+      review: review
+    );
+    if(res){
+      _logger.message("addItemReview", "Review added : $itemId");
+      await fetchSpecificItem(itemId);
+    }
+    _loadingSigleItem[itemId] = false;
+    return res;
+  }
+
+  Future fetchSpecificItem( String itemId,{ bool enableLoading = false}) async {
+    if(enableLoading){
+      _loadingSigleItem[itemId] = true;
+    }
+    final item = await ItemService.getSpecificItem(itemId);
+    if(item!=null){
+      _items.update((oldList) {
+        if (oldList != null) {
+          int i = oldList.indexWhere((e) => e.id == item.id);
+          if (i != -1) {
+            oldList[i]=item;
+            _items(oldList);
+          }
+        }
+      });
+
+      _favItems.update((oldList) {
+        if (oldList != null) {
+          int i = oldList.indexWhere((e) => e.id == item.id);
+          if (i != -1) {
+            oldList[i]=item;
+            _favItems(oldList);
+          }
+        }
+      });
+
+      _cartItems.update((oldList) {
+        if (oldList != null) {
+          int i = oldList.indexWhere((e) => e.item?.id == item.id);
+          if (i != -1) {
+            oldList[i].item=item;
+            _cartItems(oldList);
+            // log("Cart Item updated");
+          }
+        }
+      });
+    }
+
+    if(enableLoading){
+     _loadingSigleItem[itemId] = false;
     }
   }
 

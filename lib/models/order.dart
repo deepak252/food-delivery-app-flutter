@@ -19,7 +19,7 @@ class Order {
       this.status,
       // this.isCod,
       this.deliveryDate,
-      this.createdAt,
+      required this.createdAt,
       this.updatedAt,
     });
 
@@ -35,7 +35,7 @@ class Order {
     String? status;
     // bool? isCod;
     DateTime? deliveryDate;
-    DateTime? createdAt;
+    DateTime createdAt;
     DateTime? updatedAt;
 
 
@@ -56,7 +56,7 @@ class Order {
         deliveryAddress: Address.fromJson(json["deliveryAddress"]),
         status: json["status"],
         deliveryDate: DateTime.tryParse(json["deliveryDate"]??'')?.toLocal(),
-        createdAt: DateTime.tryParse(json["createdAt"]??'')?.toLocal(),
+        createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.tryParse(json["updatedAt"]??'')?.toLocal(),
     );
 
@@ -74,7 +74,7 @@ class Order {
         "status": status,
         // "isCOD": isCod,
         "deliveryDate": deliveryDate?.toIso8601String(),
-        "createdAt": createdAt?.toIso8601String(),
+        "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
     };
 }
@@ -86,10 +86,7 @@ extension ExtOrder on Order{
     return items.map((e) => e.item?.name??'').join(", ");
   }
   String get date{
-    if(createdAt==null){
-      return "";
-    }
-    String d = DateTimeUtils.formatMMMDDYYYY(createdAt!);
+    String d = DateTimeUtils.formatMMMDDYYYY(createdAt);
     String cd = DateTimeUtils.formatMMMDDYYYY(DateTime.now());
     if(d==cd){
       return "Today";
@@ -97,10 +94,7 @@ extension ExtOrder on Order{
     return d;
   }
   String get time{
-    if(createdAt==null){
-      return "";
-    }
-    return DateTimeUtils.formatHHMM(createdAt!);
+    return DateTimeUtils.formatHHMM(createdAt);
   }
   
 }
