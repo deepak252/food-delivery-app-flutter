@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
   }
 
-  authStream(){
+  authStream()async{
+    _loading.value=true;
     FirebaseAuthService.authStateChanges.listen((user)async{
       log("**** AUTH STATE CHANGED ****** : ${user}");
       if(user?.uid!=null){
@@ -39,6 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
         _loading.value=false;
       }
     });
+    await Future.delayed(Duration(milliseconds: 20));
+    _loading.value=false;
   }
 
   // void init()async{

@@ -43,7 +43,7 @@ class CartItemTile extends StatelessWidget {
             ),]
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
                 flex: 2,

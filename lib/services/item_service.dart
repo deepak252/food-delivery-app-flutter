@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/firestore_service.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';
@@ -30,12 +29,18 @@ class ItemService{
 
   static Future<List<Item>?> getItems() async {
     try {
-      final docs = await _itemDB.getDocs(limit: 2);
+      final docs = await _itemDB.getDocs(limit: 4);
+      List<Item> items = [];
       if(docs!=null){
-        return docs.map((doc) => 
-          Item.fromJson(doc.data() as Map<String,dynamic>
-        )).toList();
+        for(var doc in docs){
+          try{
+            items.add(Item.fromJson(doc.data() as Map<String,dynamic>));
+          }catch(e,s){
+            _logger.error("getItems - Invalid json items", error: e, stackTrace: s);
+          }
+        }
       }
+      return items;
     } catch (e,s) {
       _logger.error("getItems", error: e, stackTrace : s);
     }
@@ -48,11 +53,17 @@ class ItemService{
         return [];
       }
       final docs = await _itemDB.getSpecificDocs(docIds);
+      List<Item> items = [];
       if(docs!=null){
-        return docs.map((doc) => 
-          Item.fromJson(doc.data() as Map<String,dynamic>
-        )).toList();
+        for(var doc in docs){
+          try{
+            items.add(Item.fromJson(doc.data() as Map<String,dynamic>));
+          }catch(e,s){
+            _logger.error("getSpecificItems - Invalid json items", error: e, stackTrace: s);
+          }
+        }
       }
+      return items;
     } catch (e,s) {
       _logger.error("getItems", error: e, stackTrace : s);
     }
@@ -63,21 +74,10 @@ class ItemService{
     try {
       _itemDB.getDoc(itemId);
     } catch (e,s) {
-      _logger.error("getItems", error: e, stackTrace : s);
+      _logger.error("getItem", error: e, stackTrace : s);
     }
     return null;
   }
-
-  
-
-  // static Future<List<Item>?> addItemToCart(Cart cart) async {
-  //   try {
-  //     _itemDB.getDoc("oSXnsv4na28lnVA5nbpk");
-  //   } catch (e,s) {
-  //     _logger.error("getItems", error: e, stackTrace : s);
-  //   }
-  //   return null;
-  // }
 
   // Only for Development
   static Future<Item?> _addLocation(Map<String, dynamic> jsonItem)async{

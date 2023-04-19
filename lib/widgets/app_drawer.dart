@@ -5,6 +5,7 @@ import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/screens/fav_items_screen.dart';
+import 'package:food_delivery_app/screens/order/order_history_screen.dart';
 import 'package:food_delivery_app/splash_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/user_profile_widget.dart';
@@ -69,6 +70,7 @@ class AppDrawer extends StatelessWidget {
               _DrawerTile(
                 onTap: ()async{
                   Navigator.pop(context);
+                  AppNavigator.push(context, OrderHistoryScreen());
                 }, 
                 icon: CupertinoIcons.bag,
                 title: "Orders",

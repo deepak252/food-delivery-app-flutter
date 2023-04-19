@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
-import 'package:food_delivery_app/screens/checkout_screen.dart';
+import 'package:food_delivery_app/screens/checkout/checkout_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/widgets/item/cart_item_tile.dart';
@@ -92,7 +92,7 @@ class _CartScreenState extends State<CartScreen> with AutomaticKeepAliveClientMi
               ),
               SizedBox(width: 12,),
               Text(
-                "₹ ${_itemController.cartTotalPrice}",
+                "₹ ${_itemController.orderAmount}",
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(width: 12,),

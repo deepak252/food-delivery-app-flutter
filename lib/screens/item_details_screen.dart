@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/widgets/cart_counter.dart';
 import 'package:food_delivery_app/widgets/custom_carousel.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/widgets/like_button.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ItemDetailsScreen extends StatelessWidget {
   final Item item;
@@ -106,18 +108,32 @@ class ItemDetailsScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold
                                 ),
                               ),
-                            Row(
-                              children: [
-                                const Icon(Icons.location_pin,size: 16,),
-                                Flexible(
-                                  child: Text(
-                                    "${item.restaurantLocation?.completeAddress}",
-                                    style: const TextStyle(
-                                      fontSize: 14
+                            InkWell(
+                              borderRadius: BorderRadius.circular(6),
+                              onTap: ()async{
+                                final url = item.restaurantLocation?.mapUrl;
+                                
+                                if (url!=null && !await launchUrl(Uri.parse(url))) {
+
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.location_pin,size: 16,),
+                                    Flexible(
+                                      child: Text(
+                                        "${item.restaurantLocation?.completeAddress}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Themes.colorPrimary
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                             const SizedBox(height: 16,),
 
@@ -142,6 +158,40 @@ class ItemDetailsScreen extends StatelessWidget {
                                     _userController.hindiDesc(!isHindi);
                                   }
                                 )
+                              ],
+                            ),
+                            const SizedBox(height: 6,),
+                            Text(
+                              isHindi
+                              ? "${item.descHindi}"
+                              : "${item.descEnglish}",
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+
+
+
+
+
+                            const SizedBox(height: 16,),
+
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Reviews",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(width: 8,),
+                                
                               ],
                             ),
                             const SizedBox(height: 6,),

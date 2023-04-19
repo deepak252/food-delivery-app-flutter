@@ -1,5 +1,6 @@
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
+import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/user.dart';
 import 'package:food_delivery_app/services/firebase_auth_service.dart';
@@ -20,6 +21,8 @@ class UserController extends GetxController{
   User? get user => _user.value;
   bool get isSignedIn => user!=null;
 
+  Address? get address => user?.address;
+
   List<String> get getFavItemIds => user?.favItems??[];
   List<CartItem> get getCartItems => user?.cartItems??[];
 
@@ -32,7 +35,7 @@ class UserController extends GetxController{
 
   int getCartItemQty(String itemId){
     return getCartItems.firstWhereOrNull(
-      (e) => e.itemId==itemId)?.quantity??0;
+      (e) => e.itemId==itemId)?.quantity??1;
   }
 
   final _loadingSigleItem = {}.obs;
@@ -171,6 +174,27 @@ class UserController extends GetxController{
       });
     }
     _loadingSigleItem[itemId] = false;
+  }
+
+  Future<bool> removeCartAllITems()async{
+    if(!isSignedIn){
+      _logger.message("removeCartAllITems", "Not Signed In!");
+      return false;
+    }
+    final res = await UserService.updateCart(
+      userId: user?.id??'',
+      cartItems: []
+    );
+    if(res){
+      _logger.message("removeCartAllITems", "Items removed from cart");
+      _itemController.fetchCartItems(cart: [], enableLoading: false);
+      _user.update((val) {
+        val?.cartItems = [];
+        _user(val);
+      });
+      return true;
+    }
+    return false;
   }
 
   Future updateCartItemQty(String itemId, int qty)async{

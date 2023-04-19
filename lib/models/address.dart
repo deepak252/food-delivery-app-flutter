@@ -76,7 +76,7 @@ class Address {
   }
 }
 
-extension AddrExtension on Address{
+extension ExtAddress on Address{
   String? get getCompleteAddress{
     if(completeAddress==null){
       if(name!=null){
@@ -104,5 +104,9 @@ extension AddrExtension on Address{
       }
     }
     return completeAddress;
+  }
+
+  String get mapUrl{
+    return "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
   }
 }

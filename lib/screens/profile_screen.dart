@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/screens/fav_items_screen.dart';
+import 'package:food_delivery_app/screens/order/order_history_screen.dart';
 import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/widgets/not_signed_in.dart';
 import 'package:food_delivery_app/widgets/user_profile_widget.dart';
@@ -49,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                 label: "My Orders",
                 icon: CupertinoIcons.bag,
                 onTap: (){
-                  
+                  AppNavigator.push(context, OrderHistoryScreen());
                 }
               ),
               Divider(),

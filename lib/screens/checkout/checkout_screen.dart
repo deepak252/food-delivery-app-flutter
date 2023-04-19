@@ -1,15 +1,21 @@
 
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
+import 'package:food_delivery_app/controllers/order_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/models/order.dart';
+import 'package:food_delivery_app/screens/checkout/post_checkout_screen.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/utils/location_utils.dart';
 import 'package:food_delivery_app/widgets/address_bottom_sheet.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/widgets/custom_loading_indicator.dart';
 import 'package:food_delivery_app/widgets/custom_snackbar.dart';
+import 'package:food_delivery_app/widgets/field_value_widget.dart';
 import 'package:food_delivery_app/widgets/item/order_item_tile.dart';
 import 'package:food_delivery_app/widgets/no_result_widget.dart';
 import 'package:get/get.dart';
@@ -26,6 +32,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
   
   final _itemController = Get.find<ItemController>();
   final _userController = Get.find<UserController>();
+  final _orderController = Get.put(OrderController());
   
   @override
   void initState() {
@@ -46,7 +53,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Order",
+          "Checkout",
         ),
         titleSpacing: 0,
       ),
@@ -81,7 +88,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
                   SizedBox(width: 4,),
                   Expanded(
                     child: Text(
-                      "${_userController.user?.address?.completeAddress}",
+                      "${_userController.address?.completeAddress}",
                       style: const TextStyle(
                         fontSize: 14, 
                         // fontWeight: FontWeight.bold,
@@ -107,13 +114,13 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
                         log("Error",error: e,stackTrace: s);
                         CustomSnackbar.error(error: e);
                         await showAddressBottomSheet(
-                          _userController.user?.address
+                          _userController.address
                         );
                       }
                       
                     }, 
                     icon: Icon(
-                      _userController.user?.address!=null
+                      _userController.address!=null
                       ? Icons.edit
                       : Icons.add,
                       size: 28,
@@ -130,7 +137,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
                 ),
               ),
               billingDetails(
-                _itemController.cartTotalPrice
+                _itemController.orderAmount,
+                _itemController.gstAmount,
+                _itemController.totalAmount,
               ),
               SizedBox(height: 12,),
               Text(
@@ -165,36 +174,48 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: CustomElevatedButton(
-            onPressed: (){
+            onPressed: ()async{
+              if(_userController.address==null){
+                return CustomSnackbar.error(error: "Delivery address is required");
+              }
+              customLoadingIndicator(context: context, canPop: false);
+              final order = Order(
+                orderId: '', 
+                userId: _userController.user?.id??'', 
+                items: _itemController.cartItems.where((e) => e.item!=null).toList(), 
+                orderAmount: _itemController.orderAmount, 
+                gstAmount: _itemController.gstAmount, 
+                totalAmount: _itemController.totalAmount, 
+                deliveryAddress: _userController.address!,
+                status: "Order Created",
+                createdAt: firestore.Timestamp.now().toDate(),
+                updatedAt: firestore.Timestamp.now().toDate(),
+              );
+              await _orderController.createOrder(
+                order: order
+              );
+              bool cartDeleted = await _userController.removeCartAllITems();
+              if(mounted){
+                Navigator.pop(context);
+              }
+              if(cartDeleted){
+                AppNavigator.pushReplacement(context, PostCheckoutScreen());
+              }
 
             },
             borderRadius: 100,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(width: 12,),
-                Flexible(
-                  child: Text(
-                    "Order Now",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                // SizedBox(width: 12,),
-                // Text(
-                //   "₹ ${_itemController.cartTotalPrice}",
-                //   style: TextStyle(fontSize: 16),
-                // ),
-                // SizedBox(width: 12,),
-              ],
-            ),
+            text: "Order Now"
           ),
         );
       })
     );
   }
 
-  Widget billingDetails(double orderAmount){
+  Widget billingDetails(
+    double orderAmount,
+    double gstAmount,
+    double totalAmount
+  ){
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
       margin: EdgeInsets.symmetric(horizontal: 6,vertical: 6),
@@ -207,52 +228,26 @@ class _CheckoutScreenState extends State<CheckoutScreen>{
       ),
       child: Column(
         children: [
-          fieldValue(
+          FieldValueWidget(
             field: "Order Amount", 
             value: "₹ $orderAmount"
           ),
-          fieldValue(
+          FieldValueWidget(
             field: "GST", 
-            value: "₹ ${orderAmount*0.18}"
+            value: "₹ $gstAmount"
           ),
-          fieldValue(
+          FieldValueWidget(
             field: "Discount", 
             value: "₹ 0"
           ),
           Divider(),
-          fieldValue(
+          FieldValueWidget(
             field: "Total", 
-            value: "₹ ${orderAmount*1.18}",
+            value: "₹ $totalAmount",
             bold: true
           ),
         ],
       ),
-    );
-  }
-
-  Widget fieldValue({
-    required String field,
-    required String value,
-    bool bold=false
-  }){
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            field,
-            style: TextStyle(
-              fontWeight: bold? FontWeight.bold : null
-            ),
-          ),
-        ),
-        SizedBox(width: 8,),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: bold? FontWeight.bold : null
-          ),
-        ),
-      ],
     );
   }
 

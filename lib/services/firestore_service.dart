@@ -72,6 +72,37 @@ class FirestoreService{
     return null;
   }
 
+  Future<List<DocumentSnapshot>?> getDocsWithCondition(
+    Object field, {
+      Object? isEqualTo,
+      Object? isNotEqualTo,
+      Object? isLessThan,
+      Object? isLessThanOrEqualTo,
+      Object? isGreaterThan,
+      Object? isGreaterThanOrEqualTo,
+      Object? arrayContains,
+      Iterable<Object?>? arrayContainsAny,
+      Iterable<Object?>? whereIn,
+      Iterable<Object?>? whereNotIn,
+      bool? isNull,
+    }
+  )async{
+    try{
+      final querySnapshot = await _collection
+        .where(
+          field,
+          isEqualTo : isEqualTo
+        )
+        .get();
+      return querySnapshot.docs;
+    }catch(e,s){
+      _logger.error("getDocs", error: e,stackTrace: s);
+    } 
+    return null;
+  }
+
+  
+
   String getRandomDocId(){
     return _collection.doc().id;
   }

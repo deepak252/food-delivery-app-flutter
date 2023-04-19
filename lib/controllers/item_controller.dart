@@ -2,6 +2,7 @@ import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/food_category.dart';
 import 'package:food_delivery_app/models/item.dart';
 import 'package:food_delivery_app/services/item_service.dart';
+import 'package:food_delivery_app/utils/num_utils.dart';
 import 'package:get/get.dart';
 
 /// For the STATE of food items.
@@ -28,9 +29,14 @@ class ItemController extends GetxController {
   bool get isLoadingCartItems => _loadingCartItems.value;
   final _cartItems = Rxn<List<CartItem>>();
   List<CartItem> get cartItems => _cartItems.value??[];
-  double get cartTotalPrice =>cartItems.fold(
-    0, (prev, e) => prev+ (e.item?.price??0)*(e.quantity??1)
-  );
+  double get orderAmount{
+    double amount = cartItems.fold(
+      0, (prev, e) => prev+ (e.item?.price??0)*(e.quantity??1)
+    );
+    return NumUtils.parseDouble(amount, precision: 2);
+  }
+  double get gstAmount => NumUtils.parseDouble(orderAmount*0.18, precision: 2);
+  double get totalAmount => NumUtils.parseDouble(orderAmount*1.18,precision: 2);
 
   final _loadingSigleItem = {}.obs;
   bool loadingSingleItem(String itemId){
@@ -47,10 +53,8 @@ class ItemController extends GetxController {
     if(enableLoading){
       _loadingItems(true);
     }
-    // await Future.delayed(Duration(milliseconds: 2000));
     final items = await ItemService.getItems();
     _items(items);
-    // _items(_sampleItems+_sampleItems+_sampleItems);
 
     if(enableLoading){
       _loadingItems(false);
@@ -86,69 +90,5 @@ class ItemController extends GetxController {
       _loadingCartItems(false);
     }
   }
-
   
 }
-
-List<Item> _sampleItems = [
-  Item(
-    id: "1",
-    name: "Burger",
-    category: ["Snack"],
-    descEnglish: "High quality beef medium to well with cheese and bacon on a multigrain bun.",
-    descHindi: "मल्टीग्रेन बन पर पनीर और बेकन के साथ उच्च गुणवत्ता वाले बीफ़ मध्यम से अच्छी तरह से।",
-    images: [
-      "https://img.freepik.com/free-photo/double-hamburger-isolated-white-background-fresh-burger-fast-food-with-beef-cream-cheese_90220-1192.jpg",
-      "https://www.licious.in/blog/wp-content/uploads/2022/08/shutterstock_2014376390.jpg"
-    ],
-    price: 80,
-    reviews: [
-      
-    ]
-  ),
-  Item(
-    id: "1",
-    name: "Burger",
-    category: ["Snack"],
-    descEnglish: "High quality beef medium to well with cheese and bacon on a multigrain bun.",
-    descHindi: "मल्टीग्रेन बन पर पनीर और बेकन के साथ उच्च गुणवत्ता वाले बीफ़ मध्यम से अच्छी तरह से।",
-    images: [
-      "https://img.freepik.com/free-photo/double-hamburger-isolated-white-background-fresh-burger-fast-food-with-beef-cream-cheese_90220-1192.jpg",
-      "https://www.licious.in/blog/wp-content/uploads/2022/08/shutterstock_2014376390.jpg"
-    ],
-    price: 80,
-    reviews: [
-      
-    ]
-  ),
-  Item(
-    id: "1",
-    name: "Burger",
-    category: ["Snack"],
-    descEnglish: "High quality beef medium to well with cheese and bacon on a multigrain bun.",
-    descHindi: "मल्टीग्रेन बन पर पनीर और बेकन के साथ उच्च गुणवत्ता वाले बीफ़ मध्यम से अच्छी तरह से।",
-    images: [
-      "https://img.freepik.com/free-photo/double-hamburger-isolated-white-background-fresh-burger-fast-food-with-beef-cream-cheese_90220-1192.jpg",
-      "https://www.licious.in/blog/wp-content/uploads/2022/08/shutterstock_2014376390.jpg"
-    ],
-    price: 80,
-    reviews: [
-      
-    ]
-  ),
-  Item(
-    id: "1",
-    name: "Burger",
-    category: ["Snack"],
-    descEnglish: "High quality beef medium to well with cheese and bacon on a multigrain bun.",
-    descHindi: "मल्टीग्रेन बन पर पनीर और बेकन के साथ उच्च गुणवत्ता वाले बीफ़ मध्यम से अच्छी तरह से।",
-    images: [
-      "https://img.freepik.com/free-photo/double-hamburger-isolated-white-background-fresh-burger-fast-food-with-beef-cream-cheese_90220-1192.jpg",
-      "https://www.licious.in/blog/wp-content/uploads/2022/08/shutterstock_2014376390.jpg"
-    ],
-    price: 80,
-    reviews: [
-      
-    ]
-  )
-];

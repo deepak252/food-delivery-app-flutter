@@ -7,6 +7,12 @@ class AppNavigator{
     );
   }
 
+  static Future pushReplacement(BuildContext context,Widget widget){
+    return Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_)=>widget), 
+    );
+  }
+
   static Future pushAndRemoveUntil(BuildContext context,Widget widget){
     return Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_)=>widget), 
