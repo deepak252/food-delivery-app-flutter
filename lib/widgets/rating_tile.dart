@@ -13,30 +13,42 @@ class RatingTile extends StatelessWidget {
         color: ratingColor,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            "${rating}",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.bold
-            ),
+      child:rating==0
+      ? Text(
+          " New ",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+            fontWeight: FontWeight.bold
           ),
-          Icon(
-            Icons.star, 
-            size: 14, color: 
-            Colors.white,
-          )
-        ],
-      ),
+        )
+      : Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "${rating}",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            Icon(
+              Icons.star, 
+              size: 14, color: 
+              Colors.white,
+            )
+          ],
+        ),
     );
   }
 
   Color get ratingColor{
     final r = rating;
+    if(r==0){
+      return Colors.blue;
+    }
     return r>=4
       ? Colors.green 
       : r>=2

@@ -1,5 +1,6 @@
 import 'package:food_delivery_app/controllers/bottom_nav_controller.dart';
 import 'package:food_delivery_app/controllers/item_controller.dart';
+import 'package:food_delivery_app/controllers/order_controller.dart';
 import 'package:food_delivery_app/models/address.dart';
 import 'package:food_delivery_app/models/cart_item.dart';
 import 'package:food_delivery_app/models/user.dart';
@@ -241,6 +242,7 @@ class UserController extends GetxController{
     await Get.delete<BottomNavController>();
     await Get.delete<UserController>();
     await Get.delete<ItemController>();
+    await Get.delete<OrderController>();
   }
 
 }

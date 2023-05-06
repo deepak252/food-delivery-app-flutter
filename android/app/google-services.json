@@ -14,7 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "969539089225-do8savo3m1f0s4ff2pd6pcoeeim6uj32.apps.googleusercontent.com",
+          "client_id": "969539089225-f9fbvu206urgqls05gpbjier23iulhme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.food_delivery_app",
+            "certificate_hash": "4fd0ad91ef0844bb2af4fa0df5027afdeac5736a"
+          }
+        },
+        {
+          "client_id": "969539089225-op1ils4ih1rhl36k9elq0mpe1ve23nqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.food_delivery_app",
+            "certificate_hash": "c9b7c40a5174dc0eb332f80d52a61a008dd20ee2"
+          }
+        },
+        {
+          "client_id": "969539089225-973qrdmp54bjfgv74al54d7av48c5pjl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +43,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "969539089225-do8savo3m1f0s4ff2pd6pcoeeim6uj32.apps.googleusercontent.com",
+              "client_id": "969539089225-973qrdmp54bjfgv74al54d7av48c5pjl.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

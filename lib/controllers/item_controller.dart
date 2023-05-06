@@ -74,7 +74,7 @@ class ItemController extends GetxController {
     if(enableLoading){
       _loadingItems(true);
     }
-    final items = await ItemService.getItems();
+    final items = await ItemService.getItems(selectedCategory?.name??'');
     _items(items);
 
     if(enableLoading){

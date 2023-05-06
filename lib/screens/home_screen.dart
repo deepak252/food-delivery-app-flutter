@@ -43,20 +43,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.build(context);
     return Scaffold(
       body: Obx((){
-        if(_itemController.isLoadingItems){
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if(_itemController.items.length==0){
-          return NoResultWidget(
-            title: "No Items Found!",
-            onRefresh: ()async{
-            },
-          );
-        }
         final selectedCategory = _itemController.selectedCategory;
-
         // return CustomElevatedButton(
         //   text: "Location",
         //   onPressed: ()async{
@@ -101,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       }else{
                         _itemController.setCategory = category;
                       }
+                      fetchItems();
                     },
                   );
                 },
@@ -108,24 +96,34 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             ),
             Expanded(
               flex: 5,
-              child: RefreshIndicator(
-                onRefresh: fetchItems,
-                child: GridView.builder(
-                  addAutomaticKeepAlives: true,
-                  padding: EdgeInsets.symmetric(horizontal: 6),
-                  itemCount: _itemController.items.length,
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
-                    childAspectRatio: 0.8
+              child: _itemController.isLoadingItems
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : _itemController.items.isEmpty
+                ? NoResultWidget(
+                    title: "No Items Found!",
+                    onRefresh: ()async{
+                    },
+                  )
+                : RefreshIndicator(
+                    onRefresh: fetchItems,
+                    child: GridView.builder(
+                      addAutomaticKeepAlives: true,
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      itemCount: _itemController.items.length,
+                      physics: BouncingScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
+                        childAspectRatio: 0.8
+                      ),
+                      itemBuilder: (BuildContext context, int index){
+                        return ItemTile(
+                          item : _itemController.items[index],
+                        );
+                      },
+                    ),
                   ),
-                  itemBuilder: (BuildContext context, int index){
-                    return ItemTile(
-                      item : _itemController.items[index],
-                    );
-                  },
-                ),
-              ),
             ),
           ],
         );

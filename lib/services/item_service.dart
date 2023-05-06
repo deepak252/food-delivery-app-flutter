@@ -14,23 +14,37 @@ class ItemService{
   // Only for Development
   static Future insertItems() async {
     try {
+      int success=0, failed=0;
       for(int i=0;i<_data.length;i++){
         final item  = await _addLocation(_data[i]);
         if(item!=null){
           item.id = _itemDB.getRandomDocId();
-          await _itemDB.setDoc(item.id, item.toJson());          
+          await _itemDB.setDoc(item.id, item.toJson());     
+          success++;     
+        }else{
+          failed++;
         }
-        log("Items Remaining : ${_data.length-i-1}");
+        _logger.message("insertItems", "Items Remaining : ${_data.length-i-1}");
       }
-      _logger.message("insertItems", "All Items Uploaded");
+      _logger.message("insertItems", "success : ${success}, failed : ${failed}");
     } catch (e,s) {
       _logger.error("insertItems", error: e, stackTrace : s);
     }
   }
 
-  static Future<List<Item>?> getItems() async {
+  static Future<List<Item>?> getItems(String category) async {
     try {
-      final docs = await _itemDB.getDocs(limit: 4);
+      List<DocumentSnapshot<Object?>>? docs;
+
+      if(category.isEmpty){
+        docs = await _itemDB.getDocs(limit: 20);
+      }else{
+        docs = await _itemDB.getDocsWithCondition(
+          "category",
+          arrayContains: category,
+          limit: 20
+        );
+      }
       List<Item> items = [];
       if(docs!=null){
         for(var doc in docs){
@@ -150,6 +164,4 @@ class ItemService{
 }
 
 
-List<Map<String, dynamic>>  _data = [
-  
-];
+List<Map<String, dynamic>>  _data = []; 

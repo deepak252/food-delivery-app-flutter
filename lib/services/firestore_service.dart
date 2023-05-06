@@ -85,16 +85,30 @@ class FirestoreService{
       Iterable<Object?>? whereIn,
       Iterable<Object?>? whereNotIn,
       bool? isNull,
+      int? limit,
     }
   )async{
     try{
-      final querySnapshot = await _collection
+      if(limit!=null){
+        final querySnapshot = await _collection
+        .where(
+          field,
+          isEqualTo : isEqualTo,
+          arrayContains: arrayContains
+        )
+        .limit(limit)
+        .get();
+        return querySnapshot.docs;
+      }else{
+        final querySnapshot = await _collection
         .where(
           field,
           isEqualTo : isEqualTo
         )
         .get();
-      return querySnapshot.docs;
+        return querySnapshot.docs;
+      }
+      
     }catch(e,s){
       _logger.error("getDocs", error: e,stackTrace: s);
     } 

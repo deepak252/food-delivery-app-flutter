@@ -31,26 +31,15 @@ class _SplashScreenState extends State<SplashScreen> {
     FirebaseAuthService.authStateChanges.listen((user)async{
       log("**** AUTH STATE CHANGED ****** : ${user}");
       if(user?.uid!=null){
-        await Future.delayed(Duration(milliseconds: 10));
         _loading.value=true;
         await _userController.fetchProfile(
           userId: user?.uid
         );
         await Future.delayed(Duration(milliseconds: 1500));
-        _loading.value=false;
       }
+      _loading.value=false;
     });
-    await Future.delayed(Duration(milliseconds: 20));
-    _loading.value=false;
   }
-
-  // void init()async{
-  //   _loading.value=true;
-  //   await _userController.fetchProfile(
-  //     enableLoading: true
-  //   );
-  //   _loading.value=false;
-  // }
 
   @override
   Widget build(BuildContext context) {

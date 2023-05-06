@@ -103,10 +103,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       }
                       try{
                         customLoadingIndicator(context: context,canPop: false);
-                        await FirebaseAuthService.signIn(
+                        final user = await FirebaseAuthService.signIn(
                           email: _emailController.text.trim(), 
                           password: _passwordController.text.trim()
                         );
+                        CustomSnackbar.success(msg: "Signed in as ${user.user?.email}");
                         // Sign In Successful
                         Navigator.pop(context); // Dismiss loading indicator
                         // AppNavigator.pushAndRemoveUntil(context, const SplashScreen());

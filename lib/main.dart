@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Food',
+      title: 'Food Point',
       debugShowCheckedModeBanner: false,
       theme: Themes.lightTheme,
       home: const SplashScreen()

@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_delivery_app/utils/logger.dart';
+import 'package:food_delivery_app/widgets/custom_snackbar.dart';
 
 class FirebaseAuthService{
   static final _logger = Logger("FirebaseAuthService");
