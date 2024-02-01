@@ -1,11 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/config/app_theme.dart';
+import 'package:food_delivery_app/config/constants.dart';
+import 'package:food_delivery_app/models/user.dart';
+import 'package:food_delivery_app/services/firebase_auth_service.dart';
+import 'package:food_delivery_app/services/user_service.dart';
+import 'package:food_delivery_app/splash_screen.dart';
+import 'package:food_delivery_app/utils/app_navigator.dart';
 import 'package:food_delivery_app/utils/keyboard_utils.dart';
 import 'package:food_delivery_app/utils/text_validator.dart';
 import 'package:food_delivery_app/widgets/app_icon_widget.dart';
 import 'package:food_delivery_app/widgets/custom_elevated_button.dart';
+import 'package:food_delivery_app/widgets/custom_loading_indicator.dart';
+import 'package:food_delivery_app/widgets/custom_snackbar.dart';
 import 'package:food_delivery_app/widgets/custom_text_field.dart';
-import 'package:get/get.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -15,6 +24,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  
   final _formkey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -43,6 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Themes.backgroundColor,
         appBar: AppBar(
           title: const Text("Sign Up"),
+          titleSpacing: 0,
         ),
         body: SingleChildScrollView(
           physics : const BouncingScrollPhysics(),
@@ -104,15 +115,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     }
                   ),
-                  
                   const SizedBox(height: 36,),
                   CustomElevatedButton(
                     onPressed: ()async{
                       if(!_formkey.currentState!.validate()){
                         return;
                       }
-                      // customLoadingIndicator(context: context,canPop: false);
-                      
+                      try{
+                        customLoadingIndicator(context: context,canPop: false);
+                        final user = await FirebaseAuthService.signUp(
+                          email: _emailController.text.trim(), 
+                          password: _passwordController.text.trim()
+                        );
+                        final newUser = await UserService.insertUser(User(
+                          id : user.uid,
+                          fullName: _nameController.text,
+                          email: _emailController.text.trim(),
+                          phone: _phoneController.text.trim(),
+                          profilePic: Constants.defaultPic
+                        ));
+                        if(newUser!=null){
+                          Navigator.pop(context); //Dismiss loading indicator
+                          AppNavigator.pushAndRemoveUntil(context, const SplashScreen());
+                        }else{
+                          throw "Something weng wrong!";
+                        }
+                      }catch(e,s){
+                        log("ERROR ",error: e, stackTrace: s);
+                        Navigator.pop(context); //Dismiss loading indicator
+                        CustomSnackbar.error(error: e);
+                      }
                     },
                     text: "Sign Up",
                   ),
@@ -123,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   GestureDetector(
                     onTap: (){
                       unfocus(context);
-                      Get.back();
+                      AppNavigator.pop(context);
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4.0),
@@ -150,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       icon: Icon(
         // Based on passwordVisible state choose the icon
         _visibilityNotifier.value ? Icons.visibility : Icons.visibility_off,
-        color: Themes.colorPrimary,
+        color: _visibilityNotifier.value ? Themes.colorPrimary : Themes.black300,
         size: 23,
       ),
       onPressed: () {

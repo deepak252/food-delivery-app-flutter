@@ -1,9 +1,13 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/screens/auth/sign_up_screen.dart';
+import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/screens/auth/sign_in_screen.dart';
+import 'package:food_delivery_app/screens/dashboard.dart';
+import 'package:food_delivery_app/services/firebase_auth_service.dart';
 import 'package:food_delivery_app/widgets/app_icon_widget.dart';
 import 'package:get/get.dart';
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({ Key? key }) : super(key: key);
@@ -13,33 +17,42 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _loading=ValueNotifier(true);
+  final _loading=ValueNotifier(false);
+  final _userController = Get.put(UserController());
 
   @override
   void initState() {
-    init();
+    authStream();
     super.initState();
   }
 
-  void init(){
+  authStream()async{
     _loading.value=true;
-    Future.delayed(Duration(milliseconds: 2000),(){
+    FirebaseAuthService.authStateChanges.listen((user)async{
+      log("**** AUTH STATE CHANGED ****** : ${user}");
+      if(user?.uid!=null){
+        _loading.value=true;
+        await _userController.fetchProfile(
+          userId: user?.uid
+        );
+        await Future.delayed(Duration(milliseconds: 1500));
+      }
       _loading.value=false;
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-    
     return ValueListenableBuilder<bool>(
       valueListenable: _loading,
       builder: (context, isLoading, child) {
         if(isLoading){
           return _splash;
         }
-        return SignUpScreen();
+        if(_userController.isSignedIn){
+          return Dashboard();
+        }
+        return SignInScreen();
       }
     );
   }
